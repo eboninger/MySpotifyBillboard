@@ -1,0 +1,9 @@
+c:\users\eli.boninger\documents\visual studio 2017\Projects\msb\msb\bin\Debug\netcoreapp1.1\msb.deps.json
+c:\users\eli.boninger\documents\visual studio 2017\Projects\msb\msb\bin\Debug\netcoreapp1.1\msb.runtimeconfig.json
+c:\users\eli.boninger\documents\visual studio 2017\Projects\msb\msb\bin\Debug\netcoreapp1.1\msb.runtimeconfig.dev.json
+c:\users\eli.boninger\documents\visual studio 2017\Projects\msb\msb\bin\Debug\netcoreapp1.1\msb.dll
+c:\users\eli.boninger\documents\visual studio 2017\Projects\msb\msb\obj\Debug\netcoreapp1.1\msb.csprojResolveAssemblyReference.cache
+c:\users\eli.boninger\documents\visual studio 2017\Projects\msb\msb\obj\Debug\netcoreapp1.1\msb.AssemblyInfo.cs
+c:\users\eli.boninger\documents\visual studio 2017\Projects\msb\msb\bin\Debug\netcoreapp1.1\msb.pdb
+c:\users\eli.boninger\documents\visual studio 2017\Projects\msb\msb\obj\Debug\netcoreapp1.1\msb.dll
+c:\users\eli.boninger\documents\visual studio 2017\Projects\msb\msb\obj\Debug\netcoreapp1.1\msb.pdb
