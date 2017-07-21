@@ -9,6 +9,7 @@ import { KeyService } from '../../key.service'
   styleUrls: ['./finish-auth.component.css']
 })
 export class FinishAuthComponent implements OnInit {
+  recentlyPlayed = {};
 
   constructor(private http: Http, private activatedRoute: ActivatedRoute,
                private keyService: KeyService) { }
@@ -24,6 +25,8 @@ export class FinishAuthComponent implements OnInit {
 
     var response = this.http.get('http://localhost:52722/api/spotify/token', {
       search: params }).subscribe();
+
+    this.http.get('http://localhost:52722/api/spotify/recently_played').subscribe(data => this.recentlyPlayed = data);
   }
 
 }
