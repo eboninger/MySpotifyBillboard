@@ -1,0 +1,9 @@
+C:\Users\eli.boninger\Documents\SideProjects\MySpotifyBillboard\aspnet\MySpotifyBillboard\MySpotifyBillboard\bin\Debug\netcoreapp1.1\MySpotifyBillboard.deps.json
+C:\Users\eli.boninger\Documents\SideProjects\MySpotifyBillboard\aspnet\MySpotifyBillboard\MySpotifyBillboard\bin\Debug\netcoreapp1.1\MySpotifyBillboard.runtimeconfig.json
+C:\Users\eli.boninger\Documents\SideProjects\MySpotifyBillboard\aspnet\MySpotifyBillboard\MySpotifyBillboard\bin\Debug\netcoreapp1.1\MySpotifyBillboard.runtimeconfig.dev.json
+C:\Users\eli.boninger\Documents\SideProjects\MySpotifyBillboard\aspnet\MySpotifyBillboard\MySpotifyBillboard\bin\Debug\netcoreapp1.1\MySpotifyBillboard.dll
+C:\Users\eli.boninger\Documents\SideProjects\MySpotifyBillboard\aspnet\MySpotifyBillboard\MySpotifyBillboard\bin\Debug\netcoreapp1.1\MySpotifyBillboard.pdb
+C:\Users\eli.boninger\Documents\SideProjects\MySpotifyBillboard\aspnet\MySpotifyBillboard\MySpotifyBillboard\obj\Debug\netcoreapp1.1\MySpotifyBillboard.csprojResolveAssemblyReference.cache
+C:\Users\eli.boninger\Documents\SideProjects\MySpotifyBillboard\aspnet\MySpotifyBillboard\MySpotifyBillboard\obj\Debug\netcoreapp1.1\MySpotifyBillboard.AssemblyInfo.cs
+C:\Users\eli.boninger\Documents\SideProjects\MySpotifyBillboard\aspnet\MySpotifyBillboard\MySpotifyBillboard\obj\Debug\netcoreapp1.1\MySpotifyBillboard.dll
+C:\Users\eli.boninger\Documents\SideProjects\MySpotifyBillboard\aspnet\MySpotifyBillboard\MySpotifyBillboard\obj\Debug\netcoreapp1.1\MySpotifyBillboard.pdb

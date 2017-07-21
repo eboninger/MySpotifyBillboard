@@ -22,7 +22,7 @@ export class FinishAuthComponent implements OnInit {
     params.set('clientsecret', this.keyService.getSingleKey("ClientSecret")); 
     params.set('code', code);
 
-    var response = this.http.get('http://localhost:62549/api/spotify/token', {
+    var response = this.http.get('http://localhost:52722/api/spotify/token', {
       search: params }).subscribe();
   }
 

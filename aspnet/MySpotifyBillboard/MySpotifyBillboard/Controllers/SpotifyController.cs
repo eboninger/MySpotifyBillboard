@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using msb.Helpers;
-using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
-using System.Text;
 using msb.Models;
-using Newtonsoft.Json;
-using System;
-using System.Collections;
-using System.IO;
-using Microsoft.AspNetCore.Mvc.Internal;
+using Microsoft.AspNetCore.Mvc;
 
-namespace msb.Controllers
+namespace MySpotifyBillboard.Controllers
 {
     [Route("api/[controller]")]
     public class SpotifyController : Controller
