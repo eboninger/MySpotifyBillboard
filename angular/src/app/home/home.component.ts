@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from './../user/user.model'
+import { Track } from './track.model'
 import { ActivatedRoute } from '@angular/router'
 import { UserDataService } from './../user-data.service'
 import { Http, URLSearchParams } from '@angular/http'
+import { SerializeTracksService } from './serialize-tracks.service'
 
 @Component({
   selector: 'app-home',
@@ -11,9 +13,11 @@ import { Http, URLSearchParams } from '@angular/http'
 })
 export class HomeComponent implements OnInit {
   userData: User
+  recentlyPlayed: Track[] = []
+
 
   constructor(private activatedRoute: ActivatedRoute, private userDataService: UserDataService,
-               private http: Http ) { }
+               private http: Http, private serializeTracksService: SerializeTracksService ) { }
 
   async ngOnInit() {
     await this.userDataService
@@ -32,7 +36,7 @@ export class HomeComponent implements OnInit {
     params.set('spotifyId', this.userData.SpotifyId);
     await this.http.get('http://localhost:52722/api/spotify/recently_played', { search: params })
       .subscribe(res => {
-        console.log(res);
+        this.recentlyPlayed = this.serializeTracksService.separate(res.json()["value"]);
       });
   }
 }
