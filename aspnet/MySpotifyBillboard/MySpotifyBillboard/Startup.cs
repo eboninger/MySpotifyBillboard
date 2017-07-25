@@ -4,9 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MySpotifyBillboard.DbContext;
+using MySpotifyBillboard.Models;
 
 namespace MySpotifyBillboard
 {
@@ -29,6 +33,9 @@ namespace MySpotifyBillboard
         {
             // Add framework services.
             services.AddMvc();
+            services.AddSingleton(Configuration);
+            services.AddDbContext<BillboardDbContext>(
+                options => options.UseSqlServer(Configuration.GetConnectionString("MySpotifyBillboard")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

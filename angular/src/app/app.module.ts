@@ -9,7 +9,9 @@ import { PresignComponent } from './presign/presign.component';
 
 import { appRoutes } from './routes';
 import { KeyService } from './key.service';
+import { UserDataService } from './user-data.service'
 import { FinishAuthComponent } from './presign/finish-auth/finish-auth.component';
+import { HomeComponent } from './home/home.component';
 
 
 @NgModule({
@@ -17,7 +19,8 @@ import { FinishAuthComponent } from './presign/finish-auth/finish-auth.component
     AppComponent,
     NavComponent,
     PresignComponent,
-    FinishAuthComponent
+    FinishAuthComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -25,7 +28,8 @@ import { FinishAuthComponent } from './presign/finish-auth/finish-auth.component
     RouterModule.forRoot(appRoutes)
   ],
   providers: [
-    KeyService
+    KeyService,
+    UserDataService
   ],
   bootstrap: [AppComponent]
 })

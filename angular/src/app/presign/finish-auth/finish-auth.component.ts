@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Http, URLSearchParams } from '@angular/http';
-import { ActivatedRoute } from '@angular/router';
-import { KeyService } from '../../key.service'
+import { ActivatedRoute, Router } from '@angular/router';
+import { KeyService } from '../../key.service';
+import { UserDataService } from './../../user-data.service'
+import { User } from '../../user/user.model';
+import 'rxjs/add/operator/map'
 
 @Component({
   selector: 'app-finish-auth',
@@ -10,23 +13,24 @@ import { KeyService } from '../../key.service'
 })
 export class FinishAuthComponent implements OnInit {
   recentlyPlayed = {};
+  userData = {}
 
   constructor(private http: Http, private activatedRoute: ActivatedRoute,
-               private keyService: KeyService) { }
+               private keyService: KeyService, private router: Router,
+               private userDataService: UserDataService) { }
 
   ngOnInit() {
     let code = this.activatedRoute.snapshot.queryParams['code'];
     console.log(code);
     let params: URLSearchParams = new URLSearchParams();
+    let spotifyId = ""
     params.set('redirecturi', this.keyService.getSingleKey("RedirectURI"));
     params.set('clientid', this.keyService.getSingleKey("ClientID"));
     params.set('clientsecret', this.keyService.getSingleKey("ClientSecret")); 
     params.set('code', code);
 
     var response = this.http.get('http://localhost:52722/api/spotify/token', {
-      search: params }).subscribe();
-
-    this.http.get('http://localhost:52722/api/spotify/recently_played').subscribe(data => this.recentlyPlayed = data);
+      search: params }).map(res => res.json())
+      .subscribe(data => this.router.navigate(['home'], { queryParams: { "spotifyId": data["value"]["spotifyId"] }}));
   }
-
 }
