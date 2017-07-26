@@ -23,7 +23,7 @@ export class PresignComponent implements OnInit {
       params.ClientID +
       "&response_type=code&redirect_uri=" +
       params.RedirectURI +
-      "&scope=user-read-recently-played user-read-playback-state user-read-email user-read-currently-playing&state=" +
+      "&scope=" + this.keyService.getSingleKey("Scope") + "&state=" +
       state;
   }
 

@@ -1,3 +1,7 @@
-<div *ngFor="let track of tracks">
-  <img [attr.src]="track?.MediumImage">
+<div class="container">
+  <table>
+    <div *ngFor="let track of tracks">
+      <app-track [track]="track"></app-track>
+    </div>
+  </table>
 </div>

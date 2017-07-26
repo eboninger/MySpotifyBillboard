@@ -1,3 +1,10 @@
-<p>
-  track works!
-</p>
+<tr>
+  <td>
+    <img [attr.src]="track?.MediumImage">
+  </td>
+  <td>
+    <div>{{track?.Name}}</div>
+    <div>{{track?.Artists.Name}}</div>
+    <div>{{track?.AlbumName}}</div>
+  </td>
+</tr>

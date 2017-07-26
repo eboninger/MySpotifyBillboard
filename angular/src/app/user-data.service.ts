@@ -17,8 +17,6 @@ export class UserDataService {
         let responseBody = {}
         let params = new URLSearchParams();
         params.set('spotifyId', spotifyId);
-        params.set('clientId', this.keyService.getSingleKey("ClientID"));
-        params.set('clientSecret', this.keyService.getSingleKey("ClientSecret"));
         return this.http.get('http://localhost:52722/api/spotify/user', { search: params });
     }
 

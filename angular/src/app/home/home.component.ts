@@ -34,8 +34,11 @@ export class HomeComponent implements OnInit {
   async getRecentlyPlayed() {
     let params = new URLSearchParams();
     params.set('spotifyId', this.userData.SpotifyId);
-    await this.http.get('http://localhost:52722/api/spotify/recently_played', { search: params })
+    await this.http.get('http://localhost:52722/api/spotify/top_all_time_tracks', { search: params })
       .subscribe(res => {
+        if (res == null) {
+          return;
+        }
         this.recentlyPlayed = this.serializeTracksService.separate(res.json()["value"]);
       });
   }

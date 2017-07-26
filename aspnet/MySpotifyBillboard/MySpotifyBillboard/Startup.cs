@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MySpotifyBillboard.DbContext;
 using MySpotifyBillboard.Models;
+using MySpotifyBillboard.Services;
 
 namespace MySpotifyBillboard
 {
@@ -36,6 +37,8 @@ namespace MySpotifyBillboard
             services.AddSingleton(Configuration);
             services.AddDbContext<BillboardDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("MySpotifyBillboard")));
+
+            services.AddScoped<IUserRepository, UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

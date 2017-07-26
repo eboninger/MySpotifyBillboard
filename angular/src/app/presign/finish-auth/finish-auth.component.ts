@@ -25,9 +25,8 @@ export class FinishAuthComponent implements OnInit {
     let params: URLSearchParams = new URLSearchParams();
     let spotifyId = ""
     params.set('redirecturi', this.keyService.getSingleKey("RedirectURI"));
-    params.set('clientid', this.keyService.getSingleKey("ClientID"));
-    params.set('clientsecret', this.keyService.getSingleKey("ClientSecret")); 
     params.set('code', code);
+    params.set('scope', this.keyService.getSingleKey("Scope"));
 
     var response = this.http.get('http://localhost:52722/api/spotify/token', {
       search: params }).map(res => res.json())
