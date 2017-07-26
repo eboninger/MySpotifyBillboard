@@ -82,37 +82,16 @@ namespace MySpotifyBillboard.Controllers
             }
         }
 
-        [HttpGet("recently_played")]
-        public async Task<IActionResult> RecentlyPlayed([FromQuery] string spotifyId)
-        {
-            var user = _userRepository.UserExists(spotifyId);
 
-            if (user == null)
+        [HttpGet("top_tracks")]
+        public async Task<IActionResult> TopTracks([FromQuery] string spotifyId, string timeFrame)
+        {
+            if (spotifyId == null || timeFrame == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Constants.BASE_ADDRESS_API);
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue(user.TokenType, user.AccessToken);
-
-                HttpResponseMessage response = await client.GetAsync("v1/me/player/recently-played?limit=50");
-                var responseString = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return Ok(Json(responseString));
-                }
-                return NotFound();
-            }
-
-        }
-
-        [HttpGet("top_all_time_tracks")]
-        public async Task<IActionResult> TopAllTimeTracks([FromQuery] string spotifyId)
-        {
+            var timeFrameQueryString = GetTimeFrameQueryString(timeFrame);
             var user = _userRepository.UserExists(spotifyId);
 
             if (user == null)
@@ -131,10 +110,9 @@ namespace MySpotifyBillboard.Controllers
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue(user.TokenType, user.AccessToken);
 
-                HttpResponseMessage response = await client.GetAsync("v1/me/top/tracks?limit=50&time_range=long_term");
+                HttpResponseMessage response = await client.GetAsync("v1/me/top/tracks?limit=50&time_range=" + timeFrameQueryString);
                 var responseString = await response.Content.ReadAsStringAsync();
 
-                Debug.WriteLine("RESPONSE: " + responseString);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -164,6 +142,9 @@ namespace MySpotifyBillboard.Controllers
         }
 
 
+
+
+
         /********************************************************************************************************/
         /********************************PRIVATE*HELPER*METHODS**************************************************/
         /********************************************************************************************************/
@@ -185,6 +166,23 @@ namespace MySpotifyBillboard.Controllers
         private static bool ExpiredAccessToken(DateTime expirationTime)
         {
             return DateTime.Now > expirationTime;
+        }
+
+        // changes time frame from query string at home to query string needed from spotify API. returns null
+        // if the query string is not valid
+        private string GetTimeFrameQueryString(string timeFrame)
+        {
+            switch (timeFrame)
+            {
+                case "long":
+                    return "long_term";
+                case "med":
+                    return "medium_term";
+                case "short":
+                    return "short_term";
+                default:
+                    return null;
+            }
         }
     }
 }

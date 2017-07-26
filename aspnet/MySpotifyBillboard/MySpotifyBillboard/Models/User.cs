@@ -6,9 +6,13 @@ namespace MySpotifyBillboard.Models
 {
     public class User
     {
+        [Required]
         public int Id { get; set; }
+
         public string AccessToken { get; set; }
+
         public string TokenType { get; set; }
+
         public string DisplayName { get; set; }
         
         [Required]
@@ -25,5 +29,11 @@ namespace MySpotifyBillboard.Models
 
         [Required]
         public string SpotifyId { get; set; }
+
+        public TopTrackList AllTimeTopTracks { get; set; }
+
+        public TopTrackList SixMonthTopTracks { get; set; }
+
+        public TopTrackList FourWeekTopTracks { get; set; }
     }
 }

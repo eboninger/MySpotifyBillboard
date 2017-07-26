@@ -14,5 +14,6 @@ namespace MySpotifyBillboard.DbContext
         }
 
         public DbSet<User> Users { get; set; }
+
     }
 }

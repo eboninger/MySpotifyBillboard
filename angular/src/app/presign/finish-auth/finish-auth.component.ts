@@ -21,7 +21,6 @@ export class FinishAuthComponent implements OnInit {
 
   ngOnInit() {
     let code = this.activatedRoute.snapshot.queryParams['code'];
-    console.log(code);
     let params: URLSearchParams = new URLSearchParams();
     let spotifyId = ""
     params.set('redirecturi', this.keyService.getSingleKey("RedirectURI"));
@@ -30,6 +29,6 @@ export class FinishAuthComponent implements OnInit {
 
     var response = this.http.get('http://localhost:52722/api/spotify/token', {
       search: params }).map(res => res.json())
-      .subscribe(data => this.router.navigate(['home'], { queryParams: { "spotifyId": data["value"]["spotifyId"] }}));
+      .subscribe(data => this.router.navigate(['home'], { queryParams: { "spotifyId": data["value"]["spotifyId"], "time_frame": "long" }}));
   }
 }

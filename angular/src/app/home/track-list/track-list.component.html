@@ -1,7 +1,18 @@
-<div class="container">
-  <table>
-    <div *ngFor="let track of tracks">
-      <app-track [track]="track"></app-track>
-    </div>
+<div class="container tracklist">
+  <table class="table table-hover">
+    <tbody>
+      <tr *ngFor="let track of tracks; let i = index;">
+        <th scope="row">
+          {{i+1}}
+        <td>
+          <img [attr.src]="track?.SmallImage">
+        </td>
+        <td>
+          <div>{{track?.Name}}</div>
+          <div>{{track?.Artists.Name}}</div>
+          <div>{{track?.AlbumName}}</div>
+        </td>
+      </tr>
+    </tbody>
   </table>
 </div>

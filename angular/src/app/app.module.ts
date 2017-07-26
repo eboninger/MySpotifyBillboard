@@ -9,7 +9,6 @@ import { PresignComponent } from './presign/presign.component';
 import { FinishAuthComponent } from './presign/finish-auth/finish-auth.component';
 import { HomeComponent } from './home/home.component';
 import { TrackListComponent } from './home/track-list/track-list.component';
-import { TrackComponent } from './home/track-list/track/track.component';
 
 import { appRoutes } from './routes';
 
@@ -27,8 +26,7 @@ import { SerializeTracksService } from './home/serialize-tracks.service'
     PresignComponent,
     FinishAuthComponent,
     HomeComponent,
-    TrackListComponent,
-    TrackComponent
+    TrackListComponent
   ],
   imports: [
     BrowserModule,
