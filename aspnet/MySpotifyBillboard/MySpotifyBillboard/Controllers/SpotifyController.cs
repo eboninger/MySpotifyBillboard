@@ -134,6 +134,7 @@ namespace MySpotifyBillboard.Controllers
                 HttpResponseMessage response = await client.GetAsync("v1/me/top/tracks?limit=50&time_range=long_term");
                 var responseString = await response.Content.ReadAsStringAsync();
 
+                Debug.WriteLine("RESPONSE: " + responseString);
 
                 if (response.IsSuccessStatusCode)
                 {
