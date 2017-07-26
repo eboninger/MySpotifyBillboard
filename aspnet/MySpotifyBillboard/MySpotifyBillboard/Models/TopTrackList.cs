@@ -11,8 +11,10 @@ namespace MySpotifyBillboard.Models
         [Required]
         public int Id { get; set; }
 
+        [Required]
         public int UserId { get; set; }
 
+        [Required]
         public IEnumerable<Track> Tracks { get; set; }
 
     }

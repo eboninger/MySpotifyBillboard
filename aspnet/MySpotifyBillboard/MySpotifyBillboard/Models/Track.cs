@@ -18,7 +18,7 @@ namespace MySpotifyBillboard.Models
         public IEnumerable<Artist> Artists { get; set; }
 
         [Required]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string LargeImage { get; set; }
@@ -41,5 +41,8 @@ namespace MySpotifyBillboard.Models
 
         [Required]
         public int TimeOnChart { get; set; }
+
+        [Required]
+        public string TrackId { get; set; }
     }
 }
