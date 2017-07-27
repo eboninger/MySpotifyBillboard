@@ -137,9 +137,36 @@ namespace MySpotifyBillboard.Controllers
                 return NotFound();
             }
 
+            if (ExpiredAccessToken(user.ExpirationTime))
+            {
+                var updatedUser = await _userRepository.Refresh(user);
+
+                // if user has revoked access token
+                if (updatedUser == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Json(updatedUser);
+                }
+            }
             // if the access token has expired
-            return Ok(ExpiredAccessToken(user.ExpirationTime) ? Json(await _userRepository.Refresh(user)) : Json(user));
+            return Ok(Json(user));
         }
+
+//        [HttpGet("deauthorize")]
+//        public async 
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -34,14 +34,20 @@ export class HomeComponent implements OnInit {
     }
 
     await this.userDataService
-      .getUser(this.activatedRoute.snapshot.queryParams["spotifyId"])
-      .subscribe(res =>  {
-        if (res == null) {
-          return;
-        }
-        this.userData = this.userDataService.serializeUser(res.json()["value"]);
-        this.getTopTracks();
-       } );
+      .getUser(this.cookieService.get("spotifyId"))
+      .subscribe(
+        res =>  {
+          if (res == null) {
+            return;
+          }
+          this.userData = this.userDataService.serializeUser(res.json()["value"]);
+          this.getTopTracks();
+        },
+        // the user has revoked token access
+        err => {
+          this.cookieService.deleteAll();
+          this.router.navigate(['']);
+        });
   }
 
   async getTopTracks() {

@@ -6,13 +6,13 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
+      <li class="nav-item" [ngClass]="checkIfActive('long')">
         <a class="nav-link" [ngClass]="checkIfDisabled()" [routerLink]="['home']" [queryParams]="{time_frame: 'long'}" queryParamsHandling="merge">All Time <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" [ngClass]="checkIfActive('med')">
         <a class="nav-link" [ngClass]="checkIfDisabled()" [routerLink]="['home']" [queryParams]="{time_frame: 'med'}" queryParamsHandling="merge">Six Months</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" [ngClass]="checkIfActive('short')">
         <a class="nav-link" [ngClass]="checkIfDisabled()" [routerLink]="['home']" [queryParams]="{time_frame: 'short'}" queryParamsHandling="merge">Four Weeks</a>
       </li>
     </ul>
@@ -20,7 +20,7 @@
 
   <ul class="nav navbar-nav navbar-right">
     <li>
-      <a class="nav-link">Deauthorize</a>
+      <a class="nav-link" (click)="deauthorize()">Deauthorize</a>
     </li>
   </ul>
 </nav>

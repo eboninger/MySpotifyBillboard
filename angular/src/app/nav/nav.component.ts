@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service'
 
 @Component({
   selector: 'app-nav',
@@ -9,7 +10,8 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 export class NavComponent implements OnInit {
   isSignedIn: boolean
 
-  constructor(private activatedRoute: ActivatedRoute, private router: Router) {
+  constructor(private activatedRoute: ActivatedRoute, private router: Router,
+               private cookieService: CookieService) {
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.updateLinks();
@@ -29,11 +31,29 @@ export class NavComponent implements OnInit {
   }
 
   updateLinks() {
-    if (this.activatedRoute.snapshot.queryParams["spotifyId"] == null) {
+    if (this.cookieService.get("spotifyId") == null || this.cookieService.get("spotifyId") == "") {
       this.isSignedIn = false;
     } else {
       this.isSignedIn = true;
     }
+  }
+
+  checkIfActive(timeFrame: string) {
+    let activeTimeFrame = this.activatedRoute.queryParams["spotifyId"];
+
+    if (activeTimeFrame == null || activeTimeFrame == "") {
+      return [];
+    }
+
+    if (activeTimeFrame == timeFrame) {
+      return ['active'];
+    }
+
+    return [];
+  }
+
+  deauthorize() {
+    this.router.navigate(['deauthorize']);
   }
 
 }

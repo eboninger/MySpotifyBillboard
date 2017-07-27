@@ -107,9 +107,9 @@ namespace MySpotifyBillboard.Services
                     var spotifyRefreshData =
                         Newtonsoft.Json.JsonConvert.DeserializeObject<SpotifyRefreshDto>(responseString);
 
-                    if (spotifyRefreshData == null)
+                    if (spotifyRefreshData.access_token == null)
                     {
-                        throw new Exception("Bad request for refresh token");
+                        return null;
                     }
 
                     return await UpdateUserAfterRefresh(user, spotifyRefreshData.access_token,

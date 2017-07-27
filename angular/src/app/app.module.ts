@@ -9,6 +9,7 @@ import { PresignComponent } from './presign/presign.component';
 import { FinishAuthComponent } from './presign/finish-auth/finish-auth.component';
 import { HomeComponent } from './home/home.component';
 import { TrackListComponent } from './home/track-list/track-list.component';
+import { DeauthorizeComponent } from './deauthorize/deauthorize.component'
 
 import { appRoutes } from './routes';
 
@@ -16,6 +17,7 @@ import { KeyService } from './key.service';
 import { UserDataService } from './user-data.service';
 import { SerializeTracksService } from './home/serialize-tracks.service';
 import { CookieService } from 'ngx-cookie-service';
+import { DeauthorizeUserService } from './user/deauthorize-user.service';
 
 
 
@@ -27,7 +29,8 @@ import { CookieService } from 'ngx-cookie-service';
     PresignComponent,
     FinishAuthComponent,
     HomeComponent,
-    TrackListComponent
+    TrackListComponent,
+    DeauthorizeComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +41,8 @@ import { CookieService } from 'ngx-cookie-service';
     KeyService,
     UserDataService,
     SerializeTracksService,
-    CookieService
+    CookieService,
+    DeauthorizeUserService
   ],
   bootstrap: [AppComponent]
 })
