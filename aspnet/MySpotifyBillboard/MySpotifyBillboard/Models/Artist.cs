@@ -8,16 +8,19 @@ namespace MySpotifyBillboard.Models
 {
     public class Artist
     {
-        [Required]
-        public int Id { get; set; }
 
-        [Required]
-        public string ArtistId { get; set; }
+//        public int ArtistId { get; set; }
+//
+//        [Required]
+//        public string SpotifyArtistId { get; set; }
+//
+//        [Required]
+//        public string Name { get; set; }
+//
+//        [Required]
+//        public string OpenInSpotify { get; set; }
+//
+//        public ICollection<TrackArtist> TrackArtists { get; set; }
 
-        [Required]
-        public string Name { get; set; }
-
-        [Required]
-        public string OpenInSpotify { get; set; }
     }
 }

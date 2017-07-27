@@ -8,8 +8,8 @@ using MySpotifyBillboard.DbContext;
 namespace MySpotifyBillboard.Migrations
 {
     [DbContext(typeof(BillboardDbContext))]
-    [Migration("20170724150227_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20170727150543_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,6 +35,9 @@ namespace MySpotifyBillboard.Migrations
                         .IsRequired();
 
                     b.Property<string>("Scope")
+                        .IsRequired();
+
+                    b.Property<string>("SpotifyId")
                         .IsRequired();
 
                     b.Property<string>("TokenType");

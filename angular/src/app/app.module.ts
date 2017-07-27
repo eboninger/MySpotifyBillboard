@@ -14,7 +14,8 @@ import { appRoutes } from './routes';
 
 import { KeyService } from './key.service';
 import { UserDataService } from './user-data.service';
-import { SerializeTracksService } from './home/serialize-tracks.service'
+import { SerializeTracksService } from './home/serialize-tracks.service';
+import { CookieService } from 'ngx-cookie-service';
 
 
 
@@ -36,7 +37,8 @@ import { SerializeTracksService } from './home/serialize-tracks.service'
   providers: [
     KeyService,
     UserDataService,
-    SerializeTracksService
+    SerializeTracksService,
+    CookieService
   ],
   bootstrap: [AppComponent]
 })

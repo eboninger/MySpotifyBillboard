@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace MySpotifyBillboard.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,6 +21,7 @@ namespace MySpotifyBillboard.Migrations
                     ExpirationTime = table.Column<DateTime>(nullable: false),
                     RefreshToken = table.Column<string>(nullable: false),
                     Scope = table.Column<string>(nullable: false),
+                    SpotifyId = table.Column<string>(nullable: false),
                     TokenType = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

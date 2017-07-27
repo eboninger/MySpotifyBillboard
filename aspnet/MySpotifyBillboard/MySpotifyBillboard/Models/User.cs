@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
@@ -30,10 +31,6 @@ namespace MySpotifyBillboard.Models
         [Required]
         public string SpotifyId { get; set; }
 
-        public TopTrackList AllTimeTopTracks { get; set; }
-
-        public TopTrackList SixMonthTopTracks { get; set; }
-
-        public TopTrackList FourWeekTopTracks { get; set; }
+//        public ICollection<TopTrackList> TopTrackLists { get; set; }
     }
 }

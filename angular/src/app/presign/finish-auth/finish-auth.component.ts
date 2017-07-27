@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Http, URLSearchParams } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { KeyService } from '../../key.service';
-import { UserDataService } from './../../user-data.service'
+import { UserDataService } from './../../user-data.service';
+import { CookieService } from 'ngx-cookie-service';
 import { User } from '../../user/user.model';
 import 'rxjs/add/operator/map'
 
@@ -17,7 +18,7 @@ export class FinishAuthComponent implements OnInit {
 
   constructor(private http: Http, private activatedRoute: ActivatedRoute,
                private keyService: KeyService, private router: Router,
-               private userDataService: UserDataService) { }
+               private userDataService: UserDataService, private cookieService: CookieService) { }
 
   ngOnInit() {
     let code = this.activatedRoute.snapshot.queryParams['code'];
@@ -29,6 +30,9 @@ export class FinishAuthComponent implements OnInit {
 
     var response = this.http.get('http://localhost:52722/api/spotify/token', {
       search: params }).map(res => res.json())
-      .subscribe(data => this.router.navigate(['home'], { queryParams: { "spotifyId": data["value"]["spotifyId"], "time_frame": "long" }}));
+      .subscribe(data => {
+        this.cookieService.set('spotifyId', data["value"]["spotifyId"]);
+        this.router.navigate(['home'], { queryParams: { "spotifyId": data["value"]["spotifyId"], "time_frame": "long" }}
+      )});
   }
 }

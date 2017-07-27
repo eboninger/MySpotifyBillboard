@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router'
 import { UserDataService } from './../user-data.service'
 import { Http, URLSearchParams } from '@angular/http'
 import { SerializeTracksService } from './serialize-tracks.service'
+import { CookieService } from 'ngx-cookie-service'
 
 @Component({
   selector: 'app-home',
@@ -18,7 +19,7 @@ export class HomeComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute, private userDataService: UserDataService,
                private http: Http, private serializeTracksService: SerializeTracksService,
-               private router: Router ) 
+               private router: Router, private cookieService: CookieService ) 
   { 
     router.events.subscribe((event) => {
       if ((event instanceof NavigationEnd) && (this.userData != null)) {
@@ -28,7 +29,7 @@ export class HomeComponent implements OnInit {
   }
 
   async ngOnInit() {
-    if (this.activatedRoute.snapshot.queryParams["spotifyId"] == null) {
+    if (this.cookieService.get("spotifyId") == null || this.cookieService.get("spotifyId") == "") {
       this.router.navigate([''])
     }
 
