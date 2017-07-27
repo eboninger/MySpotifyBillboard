@@ -9,32 +9,14 @@ using MySpotifyBillboard.Models;
 namespace MySpotifyBillboard.Migrations
 {
     [DbContext(typeof(BillboardDbContext))]
-    partial class BillboardDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170727152214_AddingTrackEntity")]
+    partial class AddingTrackEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("MySpotifyBillboard.Models.Artist", b =>
-                {
-                    b.Property<int>("ArtistId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.Property<string>("OpenInSpotify")
-                        .IsRequired();
-
-                    b.Property<string>("SpotifyArtistId")
-                        .IsRequired();
-
-                    b.HasKey("ArtistId");
-
-                    b.ToTable("Artists");
-                });
 
             modelBuilder.Entity("MySpotifyBillboard.Models.TopTrackList", b =>
                 {
@@ -97,19 +79,6 @@ namespace MySpotifyBillboard.Migrations
                     b.ToTable("Tracks");
                 });
 
-            modelBuilder.Entity("MySpotifyBillboard.Models.TrackArtist", b =>
-                {
-                    b.Property<int>("TrackId");
-
-                    b.Property<int>("ArtistId");
-
-                    b.HasKey("TrackId", "ArtistId");
-
-                    b.HasIndex("ArtistId");
-
-                    b.ToTable("TrackArtists");
-                });
-
             modelBuilder.Entity("MySpotifyBillboard.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -153,19 +122,6 @@ namespace MySpotifyBillboard.Migrations
                     b.HasOne("MySpotifyBillboard.Models.TopTrackList", "TopTrackList")
                         .WithMany("Tracks")
                         .HasForeignKey("TopTrackListId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("MySpotifyBillboard.Models.TrackArtist", b =>
-                {
-                    b.HasOne("MySpotifyBillboard.Models.Artist", "Artist")
-                        .WithMany("TrackArtists")
-                        .HasForeignKey("ArtistId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("MySpotifyBillboard.Models.Track", "Track")
-                        .WithMany("TrackArtists")
-                        .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
         }

@@ -9,9 +9,10 @@ using MySpotifyBillboard.Models;
 namespace MySpotifyBillboard.Migrations
 {
     [DbContext(typeof(BillboardDbContext))]
-    partial class BillboardDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170727153151_AddingArtistEntityWithTrackRelation")]
+    partial class AddingArtistEntityWithTrackRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")

@@ -10,15 +10,13 @@ namespace MySpotifyBillboard.Models
 {
     public class TopTrackList
     {
-//        public int TopTrackListId { get; set; }
-//
-//        public int UserRef { get; set; }
-//
-//        public ICollection<Track> Tracks { get; set; }
-//
-//        public User User { get; set; }
-//
-//        public TimeFrame TimeFrame { get; set; }
+        public int TopTrackListId { get; set; }
+
+        public ICollection<Track> Tracks { get; set; }
+
+        public User User { get; set; }
+
+        public TimeFrame TimeFrame { get; set; }
 
     }
 }

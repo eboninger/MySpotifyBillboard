@@ -31,6 +31,6 @@ namespace MySpotifyBillboard.Models
         [Required]
         public string SpotifyId { get; set; }
 
-//        public ICollection<TopTrackList> TopTrackLists { get; set; }
+        public ICollection<TopTrackList> TopTrackLists { get; set; }
     }
 }
