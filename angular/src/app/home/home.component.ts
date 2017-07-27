@@ -6,6 +6,7 @@ import { UserDataService } from './../user-data.service'
 import { Http, URLSearchParams } from '@angular/http'
 import { SerializeTracksService } from './serialize-tracks.service'
 import { CookieService } from 'ngx-cookie-service'
+import { KeyService } from './../key.service'
 
 @Component({
   selector: 'app-home',
@@ -19,7 +20,8 @@ export class HomeComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute, private userDataService: UserDataService,
                private http: Http, private serializeTracksService: SerializeTracksService,
-               private router: Router, private cookieService: CookieService ) 
+               private router: Router, private cookieService: CookieService,
+               private keyService: KeyService ) 
   { 
     router.events.subscribe((event) => {
       if ((event instanceof NavigationEnd) && (this.userData != null)) {
@@ -54,7 +56,7 @@ export class HomeComponent implements OnInit {
     let params = new URLSearchParams();
     params.set('spotifyId', this.userData.SpotifyId);
     params.set('timeFrame', this.activatedRoute.snapshot.queryParams["time_frame"])
-    await this.http.get('http://localhost:52722/api/spotify/top_tracks', { search: params })
+    await this.http.get(this.keyService.getSingleKey('API-URL') + 'spotify/top_tracks', { search: params })
       .subscribe(res => {
         if (res == null) {
           return;

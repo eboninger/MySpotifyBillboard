@@ -107,8 +107,10 @@ namespace MySpotifyBillboard.Services
                     var spotifyRefreshData =
                         Newtonsoft.Json.JsonConvert.DeserializeObject<SpotifyRefreshDto>(responseString);
 
+                    // if the user has revoked their access token, delete them from the database
                     if (spotifyRefreshData.access_token == null)
                     {
+                        DeleteUser(user);
                         return null;
                     }
 

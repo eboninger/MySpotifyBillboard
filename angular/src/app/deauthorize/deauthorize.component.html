@@ -1,5 +1,6 @@
 <div class="deauthorize-body">
   <button class="btn btn-danger" (click)="deleteUser()">Clear My Data</button>
-  <p>By clicking the above button, you are removing all of your information from our stores.  If you decided to begin using MySpotifyBillboard again, your record tracking will begin at zero days.</p>
+  <p>{{clearDataText}}</p>
   <a href="https://www.spotify.com/us/account/apps/"><button class="btn btn-danger btn-revoke">Revoke Spotify Access</button></a>
   <p>Clicking the above button will redirect you to the spotify page defining your app permissions. To revoke this app's permission, find MySpotifyBillboard and click the adjacent "Revoke Access" link.</p>
+</div>

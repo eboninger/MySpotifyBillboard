@@ -155,8 +155,19 @@ namespace MySpotifyBillboard.Controllers
             return Ok(Json(user));
         }
 
-//        [HttpGet("deauthorize")]
-//        public async 
+        [HttpGet("deauthorize")]
+        public IActionResult Deauthorize(string spotifyId)
+        {
+            var user = _userRepository.UserExists(spotifyId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            _userRepository.DeleteUser(user);
+            return Ok();
+        }
 
 
 
@@ -213,3 +224,4 @@ namespace MySpotifyBillboard.Controllers
         }
     }
 }
+
