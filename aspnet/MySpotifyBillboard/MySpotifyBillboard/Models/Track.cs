@@ -14,6 +14,9 @@ namespace MySpotifyBillboard.Models
         [Required]
         public string AlbumId { get; set; }
 
+        [Required]
+        public string AlbumOpenInSpotify { get; set; }
+
         public ICollection<TrackArtist> TrackArtists { get; set; }
 
         [Required]

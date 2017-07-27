@@ -14,6 +14,7 @@ export class SerializeTracksService {
     asObj.forEach(track => {
       tracks.push(new Track(track["album"]["name"], 
                             track["album"]["id"], 
+                            track["album"]["external_urls"]["spotify"],
                             new Artist(track["artists"][0]["id"],
                                        track["artists"][0]["name"],
                                        track["artists"][0]["external_urls"]["spotify"]),

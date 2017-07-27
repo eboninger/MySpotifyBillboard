@@ -3,6 +3,7 @@ import { Artist } from './artist.model'
 export class Track {
     AlbumName: string
     AlbumId: string
+    AlbumOpenInSpotify: string
     Artists: Artist
     Id: string
     LargeImage: string
@@ -11,9 +12,10 @@ export class Track {
     OpenInSpotify: string
     SmallImage: string
 
-    constructor(an, ai, as, i, li, mi, n, ois, si) {
+    constructor(an, ai, aois, as, i, li, mi, n, ois, si) {
         this.AlbumName = an;
         this.AlbumId = ai;
+        this.AlbumOpenInSpotify = aois;
         this.Artists = as;
         this.Id = i;
         this.LargeImage = li;
