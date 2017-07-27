@@ -8,5 +8,6 @@ export const appRoutes: Routes = [
     { path: '', component: PresignComponent },
     { path: 'home', component: HomeComponent },
     { path: 'redirect', component: FinishAuthComponent },
-    { path: 'deauthorize', component: DeauthorizeComponent }
+    { path: 'deauthorize', component: DeauthorizeComponent },
+    { path: '**', component: PresignComponent }
 ]
