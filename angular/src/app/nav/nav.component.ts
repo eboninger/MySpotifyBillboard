@@ -52,8 +52,4 @@ export class NavComponent implements OnInit {
     return [];
   }
 
-  deauthorize() {
-    this.router.navigate(['deauthorize']);
-  }
-
 }

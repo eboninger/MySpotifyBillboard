@@ -18,6 +18,7 @@ import { UserDataService } from './user-data.service';
 import { SerializeTracksService } from './home/serialize-tracks.service';
 import { CookieService } from 'ngx-cookie-service';
 import { DeauthorizeUserService } from './user/deauthorize-user.service';
+import { SpotifyLogoComponent } from './spotify-logo/spotify-logo.component';
 
 
 
@@ -30,7 +31,8 @@ import { DeauthorizeUserService } from './user/deauthorize-user.service';
     FinishAuthComponent,
     HomeComponent,
     TrackListComponent,
-    DeauthorizeComponent
+    DeauthorizeComponent,
+    SpotifyLogoComponent
   ],
   imports: [
     BrowserModule,
