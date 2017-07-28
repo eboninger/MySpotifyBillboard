@@ -61,7 +61,7 @@ export class HomeComponent implements OnInit {
         if (res == null) {
           return;
         }
-        this.recentlyPlayed = this.serializeTracksService.separate(res.json()["value"]);
+        this.recentlyPlayed = this.serializeTracksService.separate(res.json());
       });
   }
 }

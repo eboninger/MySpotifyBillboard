@@ -18,5 +18,7 @@ namespace MySpotifyBillboard.Models
 
         public TimeFrame TimeFrame { get; set; }
 
+        public DateTime LastUpdated { get; set; }
+
     }
 }

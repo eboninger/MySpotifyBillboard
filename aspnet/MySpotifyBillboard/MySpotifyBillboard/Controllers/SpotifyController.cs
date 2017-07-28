@@ -86,12 +86,13 @@ namespace MySpotifyBillboard.Controllers
         [HttpGet("top_tracks")]
         public async Task<IActionResult> TopTracks([FromQuery] string spotifyId, string timeFrame)
         {
-            if (spotifyId == null || timeFrame == null)
+            var timeFrameQueryString = GetTimeFrameQueryString(timeFrame);
+
+            if (spotifyId == null || timeFrameQueryString == null)
             {
                 return BadRequest();
             }
-
-            var timeFrameQueryString = GetTimeFrameQueryString(timeFrame);
+            
             var user = _userRepository.UserExists(spotifyId);
 
             if (user == null)
@@ -116,7 +117,7 @@ namespace MySpotifyBillboard.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return Ok(Json(responseString));
+                    return Ok(_userRepository.UpdateUserCharts(user, responseString, AsTimeFrame(timeFrame)));
                 }
                 return NotFound();
             }
@@ -220,6 +221,19 @@ namespace MySpotifyBillboard.Controllers
                     return "short_term";
                 default:
                     return null;
+            }
+        }
+
+        private TimeFrame AsTimeFrame(string timeFrame)
+        {
+            switch (timeFrame)
+            {
+                case "long":
+                    return TimeFrame.Long;
+                case "med":
+                    return TimeFrame.Med;
+                default:
+                    return TimeFrame.Short;
             }
         }
     }

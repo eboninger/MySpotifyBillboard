@@ -11,7 +11,11 @@
           </td>
           <td class="open-in-spotify-links">
             <div><a title="Open In Spotify" [attr.href]="track?.OpenInSpotify">{{track?.Name}}</a></div>
-            <div><a title="Open In Spotify" [attr.href]="track?.Artists?.OpenInSpotify">{{track?.Artists.Name}}</a></div>
+            <div>
+              <span class="tight-artist" *ngFor="let artist of track?.Artists; let isLast = last;">
+                <a title="Open In Spotify" [attr.href]="artist?.OpenInSpotify">{{artist?.Name}}{{isLast ? '' : ', '}}</a>
+              </span>
+            </div>
             <div><a title="Open In Spotify" [attr.href]="track?.AlbumOpenInSpotify">{{track?.AlbumName}}</a></div>
           </td>
       </tr>

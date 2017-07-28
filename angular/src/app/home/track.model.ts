@@ -4,7 +4,7 @@ export class Track {
     AlbumName: string
     AlbumId: string
     AlbumOpenInSpotify: string
-    Artists: Artist
+    Artists: Artist[]
     Id: string
     LargeImage: string
     MediumImage: string

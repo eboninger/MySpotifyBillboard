@@ -9,7 +9,7 @@ namespace MySpotifyBillboard.Models
     public enum TimeFrame
     {
         Short,
-        Medium,
+        Med,
         Long
     }
 }

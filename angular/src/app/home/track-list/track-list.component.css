@@ -2,3 +2,13 @@ a:link {color: black;}
 a:visited {color: black;}
 a:hover {color: black;}
 a:active {color:black;}
+
+
+.tight-artist {
+    padding-left: 0px;
+    padding-right: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+}

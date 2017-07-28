@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using MySpotifyBillboard.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace MySpotifyBillboard.Services
@@ -31,5 +33,8 @@ namespace MySpotifyBillboard.Services
 
         // update the user after scope has been changed
         User UpdateUserWithNewScope(User user, SpotifyConnectionDataDto spotifyConnectionData, string scope);
+
+        // update user database with top track info from spotify API, return updated user
+        JObject UpdateUserCharts(User user, string topTrackData, TimeFrame timeFrame);
     }
 }
