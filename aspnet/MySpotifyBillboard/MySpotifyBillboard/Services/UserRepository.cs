@@ -162,7 +162,7 @@ namespace MySpotifyBillboard.Services
                 user = NewTTL(user, rootObject, timeFrame);
             }
             // if the list does exist and hasn't been updated within the past hour, update it
-            else if ((DateTime.Now - currentTopTrackList.LastUpdated) > TimeSpan.FromMinutes(1))
+            else if ((DateTime.Now - currentTopTrackList.LastUpdated) > TimeSpan.FromHours(1))
             {
                 user = UpdateTTL(currentTopTrackList, user, rootObject, timeFrame);
             }
@@ -374,9 +374,9 @@ namespace MySpotifyBillboard.Services
                     }
 
                     var timeSinceLastUpdate = DateTime.Now - existingTrack.LastUpdated;
-                    if (timeSinceLastUpdate > TimeSpan.FromHours(1))
+                    if (timeSinceLastUpdate > TimeSpan.FromDays(1))
                     {
-                        for (int hours = 0; hours < timeSinceLastUpdate.Hours; hours++)
+                        for (int days = 0; days < timeSinceLastUpdate.Days; days++)
                         {
                             existingTrack.TimeOnChart++;
                         }

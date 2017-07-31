@@ -160,15 +160,13 @@ namespace MySpotifyBillboard.Controllers
                 HttpResponseMessage response = await client.PostAsync("v1/users/" + user.SpotifyId + "/playlists", 
                     new StringContent(requestContentString, Encoding.UTF8, "application/json"));
                 var responseString = await response.Content.ReadAsStringAsync();
-                Debug.WriteLine("RESPONSE: "+ responseString);
-
 
                 if (response.IsSuccessStatusCode)
                 {
                     var rootObject = JsonConvert.DeserializeObject<PlaylistRootObject>(responseString);
                     if (await AddTracksToPlaylist(rootObject.id, user, timeFrameObj))
                     {
-                        return Ok();
+                        return Ok(Json(rootObject.external_urls.spotify));
                     }
                 }
                 return NotFound();

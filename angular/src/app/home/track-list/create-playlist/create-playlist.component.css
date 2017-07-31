@@ -1,0 +1,7 @@
+.create-playlist {
+    position: fixed;
+    float: right;
+    bottom: 0.7rem;
+    right: 8rem;
+    background-color: black;
+}

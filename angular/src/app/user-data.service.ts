@@ -17,7 +17,7 @@ export class UserDataService {
         let responseBody = {}
         let params = new URLSearchParams();
         params.set('spotifyId', spotifyId);
-        return this.http.get('http://localhost:52722/api/spotify/user', { search: params });
+        return this.http.get(this.keyService.getSingleKey('API-URL') + 'spotify/user', { search: params });
     }
 
     serializeUser(receivedData: any) {

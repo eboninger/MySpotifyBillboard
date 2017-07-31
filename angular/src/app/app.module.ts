@@ -20,6 +20,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { DeauthorizeUserService } from './user/deauthorize-user.service';
 import { SpotifyLogoComponent } from './spotify-logo/spotify-logo.component';
 import { RoundTwoDecPipe } from './round-two-dec.pipe';
+import { CreatePlaylistComponent } from './home/track-list/create-playlist/create-playlist.component';
 
 
 
@@ -34,7 +35,8 @@ import { RoundTwoDecPipe } from './round-two-dec.pipe';
     TrackListComponent,
     DeauthorizeComponent,
     SpotifyLogoComponent,
-    RoundTwoDecPipe
+    RoundTwoDecPipe,
+    CreatePlaylistComponent
   ],
   imports: [
     BrowserModule,

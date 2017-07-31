@@ -1,0 +1,2 @@
+<a *ngIf="linkToPlaylist != ''" [attr.href]="linkToPlaylist"><button class="btn btn-primary create-playlist" (click)="export()">{{buttonText}}</button></a>
+<button *ngIf="linkToPlayList == ''" class="btn btn-primary create-playlist" (click)="export()">{{buttonText}}</button>
