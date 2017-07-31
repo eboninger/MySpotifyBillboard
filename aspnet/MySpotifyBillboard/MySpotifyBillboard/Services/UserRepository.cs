@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MySpotifyBillboard.DbContext;
 using MySpotifyBillboard.Helpers;
+using MySpotifyBillboard.Migrations;
 using MySpotifyBillboard.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -154,16 +155,22 @@ namespace MySpotifyBillboard.Services
                 _billboardDbContext.TopTrackLists.FirstOrDefault(
                     ttl => (ttl.User.Id == user.Id) && (ttl.TimeFrame == timeFrame));
 
+
+            // if the list doesn't exist, make the list
             if (currentTopTrackList == null)
             {
                 user = NewTTL(user, rootObject, timeFrame);
+            }
+            // if the list does exist and hasn't been updated within the past hour, update it
+            else if ((DateTime.Now - currentTopTrackList.LastUpdated) > TimeSpan.FromMinutes(1))
+            {
+                user = UpdateTTL(currentTopTrackList, user, rootObject, timeFrame);
             }
 
             return CreateTopTrackListDto(user, timeFrame);
         }
 
-
-
+        
 
 
         /********************************************************************************************************/
@@ -173,6 +180,7 @@ namespace MySpotifyBillboard.Services
         private User NewTTL(User user, RootObject rootObject, TimeFrame timeFrame)
         {
             var items = rootObject.items;
+            var i = 1;
             var topTrackList = new TopTrackList();
             topTrackList.Tracks = new List<Track>();
 
@@ -180,6 +188,8 @@ namespace MySpotifyBillboard.Services
             {
                 var artists = new List<Artist>();
 
+                // for every artist listed for the track, check if the artist already exist in the database.  if yes,
+                // pull that artist, otherwise, create a new artist
                 foreach (JsonArtist jsonArtist in item.artists)
                 {
                     var artist = _billboardDbContext.Artists.FirstOrDefault(a => a.SpotifyArtistId == jsonArtist.id);
@@ -205,10 +215,12 @@ namespace MySpotifyBillboard.Services
                     AlbumName = item.album.name,
                     AlbumOpenInSpotify = item.album.external_urls.spotify,
                     LargeImage = item.album.images[0].url,
+                    LastUpdated = DateTime.Now,
                     MediumImage = item.album.images[1].url,
                     Name = item.name,
                     OpenInSpotify = item.external_urls.spotify,
-                    PreviousPosition = null,
+                    Position = i,
+                    PreviousPosition = 0,
                     SmallImage = item.album.images[2].url,
                     SpotifyTrackId = item.id,
                     TopTrackList = topTrackList,
@@ -216,9 +228,15 @@ namespace MySpotifyBillboard.Services
                     TimeOnChart = 1
                 };
 
-                _billboardDbContext.Tracks.Add(track);
-                _billboardDbContext.SaveChanges();
+                if (i == 1)
+                {
+                    track.TimeAtNumberOne = 1;
+                }
 
+                _billboardDbContext.Tracks.Add(track);
+
+
+                // create trackArtist many to many relation, mapping every artist in artists to the given track
                 foreach (Artist artist in artists)
                 {
                     if (!_billboardDbContext.TrackArtists.Any(
@@ -231,9 +249,11 @@ namespace MySpotifyBillboard.Services
                         };
 
                         _billboardDbContext.TrackArtists.Add(trackArtist);
-                        _billboardDbContext.SaveChanges();
                     }
                 }
+                _billboardDbContext.SaveChanges();
+
+                i++;
 
 
 
@@ -254,7 +274,8 @@ namespace MySpotifyBillboard.Services
         {
             var userLists = user.TopTrackLists.ToList();
             var listId = userLists.Find(ul => ul.TimeFrame == timeFrame).TopTrackListId;
-            var listToConvert = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == listId).ToList();
+            var listToConvert = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == listId).OrderBy(t => t.Position).ToList();
+            var allTrackArtists = _billboardDbContext.TrackArtists.ToList();
 
             var topTrackListDto = new TopTrackListDto
             {
@@ -263,7 +284,7 @@ namespace MySpotifyBillboard.Services
 
             foreach (Track track in listToConvert)
             {
-                var trackArtists = _billboardDbContext.TrackArtists.Where(ta => ta.TrackId == track.TrackId).ToList();
+                var trackArtists = allTrackArtists.FindAll(ta => ta.TrackId == track.TrackId);
                 var artists = new List<TopTrackListDtoArtist>();
 
                 foreach (TrackArtist ta in trackArtists)
@@ -288,12 +309,136 @@ namespace MySpotifyBillboard.Services
                     MediumImage = track.MediumImage,
                     Name = track.Name,
                     OpenInSpotify = track.OpenInSpotify,
-                    SmallImage = track.SmallImage
+                    PreviousPosition = track.PreviousPosition,
+                    SmallImage = track.SmallImage,
+                    TimeOnChart = track.TimeOnChart,
+                    TimeAtNumberOne = track.TimeAtNumberOne
                 });
             }
 
 
             return JObject.Parse(JsonConvert.SerializeObject(topTrackListDto));
+        }
+
+
+        private User UpdateTTL(TopTrackList oldList, User user, RootObject rootObject, TimeFrame timeFrame)
+        {
+            user.TopTrackLists.Remove(oldList);
+
+            var oldTracks = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == oldList.TopTrackListId).ToList();
+            var items = rootObject.items;
+            var i = 1;
+            var topTrackList = new TopTrackList();
+            topTrackList.Tracks = new List<Track>();
+
+            foreach (Item item in items)
+            {
+                var existingTrack = oldTracks.FirstOrDefault(t => t.SpotifyTrackId == item.id);
+
+                if (existingTrack != null)
+                {
+                    if (i == 1)
+                    {
+                        existingTrack.TimeAtNumberOne++;
+                    }
+
+                    if (i != existingTrack.Position)
+                    {
+                        existingTrack.PreviousPosition = existingTrack.Position;
+                        existingTrack.Position = i;
+                    }
+
+                    
+                    if ((DateTime.Now - existingTrack.LastUpdated) > TimeSpan.FromMinutes(1))
+                    {
+                        existingTrack.TimeOnChart++;
+                    }
+                    existingTrack.TopTrackList = topTrackList;
+                    existingTrack.LastUpdated = DateTime.Now;
+                    i++;
+                    _billboardDbContext.SaveChanges();
+                    continue;
+                }
+
+                var artists = new List<Artist>();
+
+                // for every artist listed for the track, check if the artist already exist in the database.  if yes,
+                // pull that artist, otherwise, create a new artist
+                foreach (JsonArtist jsonArtist in item.artists)
+                {
+                    var artist = _billboardDbContext.Artists.FirstOrDefault(a => a.SpotifyArtistId == jsonArtist.id);
+
+                    if (artist == null)
+                    {
+                        artist = new Artist
+                        {
+                            Name = jsonArtist.name,
+                            OpenInSpotify = jsonArtist.external_urls.spotify,
+                            SpotifyArtistId = jsonArtist.id
+                        };
+
+                        _billboardDbContext.Artists.Add(artist);
+                    }
+
+                    artists.Add(artist);
+                }
+
+                var track = new Track
+                {
+                    AlbumId = item.album.id,
+                    AlbumName = item.album.name,
+                    AlbumOpenInSpotify = item.album.external_urls.spotify,
+                    LargeImage = item.album.images[0].url,
+                    LastUpdated = DateTime.Now,
+                    MediumImage = item.album.images[1].url,
+                    Name = item.name,
+                    OpenInSpotify = item.external_urls.spotify,
+                    Position = i,
+                    PreviousPosition = 0,
+                    SmallImage = item.album.images[2].url,
+                    SpotifyTrackId = item.id,
+                    TopTrackList = topTrackList,
+                    TimeAtNumberOne = 0,
+                    TimeOnChart = 1
+                };
+
+                _billboardDbContext.Tracks.Add(track);
+
+
+                // create trackArtist many to many relation, mapping every artist in artists to the given track
+                foreach (Artist artist in artists)
+                {
+                    if (!_billboardDbContext.TrackArtists.Any(
+                        ta => ta.ArtistId == artist.ArtistId && ta.TrackId == track.TrackId))
+                    {
+                        var trackArtist = new TrackArtist
+                        {
+                            TrackId = track.TrackId,
+                            ArtistId = artist.ArtistId
+                        };
+
+                        _billboardDbContext.TrackArtists.Add(trackArtist);
+                    }
+                }
+                _billboardDbContext.SaveChanges();
+
+                i++;
+
+
+
+            }
+
+            _billboardDbContext.TopTrackLists.Remove(oldList);
+
+            topTrackList.User = user;
+            topTrackList.TimeFrame = timeFrame;
+            topTrackList.LastUpdated = DateTime.Now;
+
+            //            _billboardDbContext.TopTrackLists.Add(topTrackList);
+            user.TopTrackLists.Add(topTrackList);
+            _billboardDbContext.SaveChanges();
+
+            return user;
         }
     }
 }

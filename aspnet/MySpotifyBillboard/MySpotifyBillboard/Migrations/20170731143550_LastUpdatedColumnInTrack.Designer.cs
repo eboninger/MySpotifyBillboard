@@ -9,9 +9,10 @@ using MySpotifyBillboard.Models;
 namespace MySpotifyBillboard.Migrations
 {
     [DbContext(typeof(BillboardDbContext))]
-    partial class BillboardDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170731143550_LastUpdatedColumnInTrack")]
+    partial class LastUpdatedColumnInTrack
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -84,7 +85,7 @@ namespace MySpotifyBillboard.Migrations
 
                     b.Property<int>("Position");
 
-                    b.Property<int>("PreviousPosition");
+                    b.Property<string>("PreviousPosition");
 
                     b.Property<string>("SmallImage")
                         .IsRequired();

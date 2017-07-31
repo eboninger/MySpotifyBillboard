@@ -21,7 +21,10 @@ namespace MySpotifyBillboard.Models
         public string MediumImage { get; set; }
         public string Name { get; set; }
         public string OpenInSpotify { get; set; }
+        public int PreviousPosition { get; set; }
         public string SmallImage { get; set; }
+        public int TimeAtNumberOne { get; set; }
+        public int TimeOnChart { get; set; }
     }
 
     public class TopTrackListDtoArtist

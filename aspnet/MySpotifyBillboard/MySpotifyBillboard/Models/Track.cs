@@ -25,6 +25,8 @@ namespace MySpotifyBillboard.Models
         [Required]
         public string LargeImage { get; set; }
 
+        public DateTime LastUpdated { get; set; }
+
         [Required]
         public string MediumImage { get; set; }
 
@@ -34,7 +36,10 @@ namespace MySpotifyBillboard.Models
         [Required]
         public string OpenInSpotify { get; set; }
 
-        public string PreviousPosition { get; set; }
+        [Required]
+        public int Position { get; set; }
+
+        public int PreviousPosition { get; set; }
 
         [Required]
         public string SmallImage { get; set; }
