@@ -1,5 +1,14 @@
 <div class="container tracklist">
   <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Position</th>
+        <th>Track</th>
+        <th></th>
+        <th>Time On Chart</th>
+        <th>Previous Position</th>
+      </tr>
+    </thead>
     <tbody>
       <tr *ngFor="let track of tracks; let i = index;">
         <th scope="row">
@@ -17,6 +26,13 @@
               </span>
             </div>
             <div><a title="Open In Spotify" [attr.href]="track?.AlbumOpenInSpotify">{{track?.AlbumName}}</a></div>
+          </td>
+          <td *ngIf="((track.TimeOnChart/7) | roundTwoDec) != 1">{{track.TimeOnChart/7 | roundTwoDec}} weeks</td>
+          <td *ngIf="((track.TimeOnChart/7) | roundTwoDec) == 1">{{track.TimeOnChart/7 | roundTwoDec}} week</td>
+          <td *ngIf="track.PreviousPosition != 0">
+            {{track.PreviousPosition}}
+            <img class="pos-img" *ngIf="track.PreviousPosition < (i + 1)" src="../../../assets/static/img/down-arrow.png" />
+            <img class="pos-img" *ngIf="track.PreviousPosition > (i + 1)" src="../../../assets/static/img/up-arrow.png" />
           </td>
       </tr>
     </tbody>

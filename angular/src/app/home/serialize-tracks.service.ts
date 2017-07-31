@@ -38,7 +38,8 @@ export class SerializeTracksService {
       })
       tracks.push(new Track(track["AlbumName"], track["AlbumId"], track["AlbumOpenInSpotify"],
                             artists, track["Id"], track["LargeImage"], track["MediumImage"],
-                            track["Name"], track["OpenInSpotify"], track["SmallImage"])) 
+                            track["Name"], track["OpenInSpotify"], track["PreviousPosition"],
+                             track["SmallImage"], track["TimeOnChart"], track["TimeAtNumberOne"])) 
     })
 
     return tracks;
