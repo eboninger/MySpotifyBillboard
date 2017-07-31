@@ -6,13 +6,16 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices.ComTypes;
+using System.Text;
 using System.Threading.Tasks;
 using MySpotifyBillboard.Helpers;
 using MySpotifyBillboard.Services;
+using Newtonsoft.Json;
 
 namespace MySpotifyBillboard.Controllers
 {
@@ -59,7 +62,7 @@ namespace MySpotifyBillboard.Controllers
 
                         // if the user is not in our database, create a new user for the app, otherwise,
                         // return the existing user
-                        var existingUser = _userRepository.UserExists((string) jsonResponse["id"]);
+                        var existingUser = _userRepository.UserExists((string)jsonResponse["id"]);
                         if (existingUser == null)
                         {
                             var newUser = await _userRepository.AddNewUser(spotifyConnectionData);
@@ -92,7 +95,7 @@ namespace MySpotifyBillboard.Controllers
             {
                 return BadRequest();
             }
-            
+
             var user = _userRepository.UserExists(spotifyId);
 
             if (user == null)
@@ -123,6 +126,56 @@ namespace MySpotifyBillboard.Controllers
             }
         }
 
+        [HttpGet("playlist")]
+        public async Task<IActionResult> CreatePlaylistForUser(string spotifyId, string timeFrame)
+        {
+            var timeFrameObj = AsTimeFrame(timeFrame);
+
+            var user = _userRepository.UserExists(spotifyId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (ExpiredAccessToken(user.ExpirationTime))
+            {
+                user = await _userRepository.Refresh(user);
+            }
+
+            CreatePlaylistDto requestContentDto = new CreatePlaylistDto
+            {
+                name = TimeFrameForPlaylistName(timeFrameObj) + " Top Tracks (" + DateTime.Now.ToString(CultureInfo.InvariantCulture) + ")"
+            };
+
+            var requestContentString = JsonConvert.SerializeObject(requestContentDto);
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Constants.BASE_ADDRESS_API);
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue(user.TokenType, user.AccessToken);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage response = await client.PostAsync("v1/users/" + user.SpotifyId + "/playlists", 
+                    new StringContent(requestContentString, Encoding.UTF8, "application/json"));
+                var responseString = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine("RESPONSE: "+ responseString);
+
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var rootObject = JsonConvert.DeserializeObject<PlaylistRootObject>(responseString);
+                    if (await AddTracksToPlaylist(rootObject.id, user, timeFrameObj))
+                    {
+                        return Ok();
+                    }
+                }
+                return NotFound();
+            }
+        }
+
+        
         [HttpGet("user")]
         public async Task<IActionResult> UserInfo(string spotifyId)
         {
@@ -234,6 +287,49 @@ namespace MySpotifyBillboard.Controllers
                     return TimeFrame.Med;
                 default:
                     return TimeFrame.Short;
+            }
+        }
+
+        private string TimeFrameForPlaylistName(TimeFrame timeFrame)
+        {
+            switch (timeFrame)
+            {
+                case TimeFrame.Long:
+                    return "All Time";
+                case TimeFrame.Med:
+                    return "Six Month";
+                default:
+                    return "Four Week";
+            }
+        }
+
+
+        private async Task<bool> AddTracksToPlaylist(string playlistId, User user, TimeFrame timeFrame)
+        {
+            var addToPlaylistDto = _userRepository.GetUrisFromUserTopTrackList(user, timeFrame);
+            var requestContentString = JsonConvert.SerializeObject(addToPlaylistDto);
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Constants.BASE_ADDRESS_API);
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue(user.TokenType, user.AccessToken);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage response = await client.PostAsync("v1/users/" + user.SpotifyId + "/playlists/" + playlistId + "/tracks",
+                    new StringContent(requestContentString, Encoding.UTF8, "application/json"));
+                var responseString = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine("RESPONSE: " + responseString);
+
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
     }

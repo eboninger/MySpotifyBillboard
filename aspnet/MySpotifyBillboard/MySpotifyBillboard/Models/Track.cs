@@ -47,6 +47,9 @@ namespace MySpotifyBillboard.Models
         [Required]
         public string SpotifyTrackId { get; set; }
 
+        [Required]
+        public string SpotifyURI { get; set; }
+
         public int TimeAtNumberOne { get; set; }
 
         [Required]

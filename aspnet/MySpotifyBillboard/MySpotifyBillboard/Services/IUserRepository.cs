@@ -36,5 +36,7 @@ namespace MySpotifyBillboard.Services
 
         // update user database with top track info from spotify API, return updated user
         JObject UpdateUserCharts(User user, string topTrackData, TimeFrame timeFrame);
+
+        AddToPlaylistDto GetUrisFromUserTopTrackList(User user, TimeFrame timeFrame);
     }
 }

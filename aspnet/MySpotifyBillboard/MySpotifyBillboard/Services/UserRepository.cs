@@ -170,7 +170,23 @@ namespace MySpotifyBillboard.Services
             return CreateTopTrackListDto(user, timeFrame);
         }
 
-        
+        public AddToPlaylistDto GetUrisFromUserTopTrackList(User user, TimeFrame timeFrame)
+        {
+            AddToPlaylistDto trackUris = new AddToPlaylistDto();
+            trackUris.uris = new List<string>();
+
+            var topTrackList =
+                _billboardDbContext.TopTrackLists.FirstOrDefault(
+                    ttl => ttl.User.Id == user.Id && ttl.TimeFrame == timeFrame);
+            var tracks = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == topTrackList.TopTrackListId).OrderBy(t => t.Position).ToList();
+
+            foreach (Track track in tracks)
+            {
+                trackUris.uris.Add(track.SpotifyURI);
+            }
+
+            return trackUris;
+        }
 
 
         /********************************************************************************************************/
@@ -188,70 +204,7 @@ namespace MySpotifyBillboard.Services
             {
                 var artists = new List<Artist>();
 
-                // for every artist listed for the track, check if the artist already exist in the database.  if yes,
-                // pull that artist, otherwise, create a new artist
-                foreach (JsonArtist jsonArtist in item.artists)
-                {
-                    var artist = _billboardDbContext.Artists.FirstOrDefault(a => a.SpotifyArtistId == jsonArtist.id);
-
-                    if (artist == null)
-                    {
-                        artist = new Artist
-                        {
-                            Name = jsonArtist.name,
-                            OpenInSpotify = jsonArtist.external_urls.spotify,
-                            SpotifyArtistId = jsonArtist.id
-                        };
-
-                        _billboardDbContext.Artists.Add(artist);
-                    }
-
-                    artists.Add(artist);
-                }
-
-                var track = new Track
-                {
-                    AlbumId = item.album.id,
-                    AlbumName = item.album.name,
-                    AlbumOpenInSpotify = item.album.external_urls.spotify,
-                    LargeImage = item.album.images[0].url,
-                    LastUpdated = DateTime.Now,
-                    MediumImage = item.album.images[1].url,
-                    Name = item.name,
-                    OpenInSpotify = item.external_urls.spotify,
-                    Position = i,
-                    PreviousPosition = 0,
-                    SmallImage = item.album.images[2].url,
-                    SpotifyTrackId = item.id,
-                    TopTrackList = topTrackList,
-                    TimeAtNumberOne = 0,
-                    TimeOnChart = 1
-                };
-
-                if (i == 1)
-                {
-                    track.TimeAtNumberOne = 1;
-                }
-
-                _billboardDbContext.Tracks.Add(track);
-
-
-                // create trackArtist many to many relation, mapping every artist in artists to the given track
-                foreach (Artist artist in artists)
-                {
-                    if (!_billboardDbContext.TrackArtists.Any(
-                        ta => ta.ArtistId == artist.ArtistId && ta.TrackId == track.TrackId))
-                    {
-                        var trackArtist = new TrackArtist
-                        {
-                            TrackId = track.TrackId,
-                            ArtistId = artist.ArtistId
-                        };
-
-                        _billboardDbContext.TrackArtists.Add(trackArtist);
-                    }
-                }
-                _billboardDbContext.SaveChanges();
+                CreateTrackWithArtists(item, artists, i, topTrackList);
 
                 i++;
 
@@ -268,6 +221,78 @@ namespace MySpotifyBillboard.Services
             _billboardDbContext.SaveChanges();
 
             return user;
+        }
+
+        private void CreateTrackWithArtists(Item item, List<Artist> artists, int i, TopTrackList topTrackList)
+        {
+            // for every artist listed for the track, check if the artist already exist in the database.  if yes,
+            // pull that artist, otherwise, create a new artist
+            foreach (JsonArtist jsonArtist in item.artists)
+            {
+                var artist = _billboardDbContext.Artists.FirstOrDefault(a => a.SpotifyArtistId == jsonArtist.id);
+
+                if (artist == null)
+                {
+                    artist = new Artist
+                    {
+                        Name = jsonArtist.name,
+                        OpenInSpotify = jsonArtist.external_urls.spotify,
+                        SpotifyArtistId = jsonArtist.id
+                    };
+
+                    _billboardDbContext.Artists.Add(artist);
+                }
+
+                artists.Add(artist);
+            }
+
+            var track = new Track
+            {
+                AlbumId = item.album.id,
+                AlbumName = item.album.name,
+                AlbumOpenInSpotify = item.album.external_urls.spotify,
+                LargeImage = item.album.images[0].url,
+                LastUpdated = DateTime.Now,
+                MediumImage = item.album.images[1].url,
+                Name = item.name,
+                OpenInSpotify = item.external_urls.spotify,
+                Position = i,
+                PreviousPosition = 0,
+                SmallImage = item.album.images[2].url,
+                SpotifyTrackId = item.id,
+                SpotifyURI = item.uri,
+                TopTrackList = topTrackList,
+                TimeAtNumberOne = 0,
+                TimeOnChart = 1
+            };
+
+            if (i == 1)
+            {
+                track.TimeAtNumberOne = 1;
+            }
+
+            _billboardDbContext.Tracks.Add(track);
+            CreateTrackArtistRelation(artists, track);
+
+            _billboardDbContext.SaveChanges();
+        }
+
+        private void CreateTrackArtistRelation(List<Artist> artists, Track track)
+        {
+            foreach (Artist artist in artists)
+            {
+                if (!_billboardDbContext.TrackArtists.Any(
+                    ta => ta.ArtistId == artist.ArtistId && ta.TrackId == track.TrackId))
+                {
+                    var trackArtist = new TrackArtist
+                    {
+                        TrackId = track.TrackId,
+                        ArtistId = artist.ArtistId
+                    };
+
+                    _billboardDbContext.TrackArtists.Add(trackArtist);
+                }
+            }
         }
 
         private JObject CreateTopTrackListDto(User user, TimeFrame timeFrame)
@@ -348,10 +373,14 @@ namespace MySpotifyBillboard.Services
                         existingTrack.Position = i;
                     }
 
-                    
-                    if ((DateTime.Now - existingTrack.LastUpdated) > TimeSpan.FromMinutes(1))
+                    var timeSinceLastUpdate = DateTime.Now - existingTrack.LastUpdated;
+                    if (timeSinceLastUpdate > TimeSpan.FromHours(1))
                     {
-                        existingTrack.TimeOnChart++;
+                        for (int hours = 0; hours < timeSinceLastUpdate.Hours; hours++)
+                        {
+                            existingTrack.TimeOnChart++;
+                        }
+                            
                     }
                     existingTrack.TopTrackList = topTrackList;
                     existingTrack.LastUpdated = DateTime.Now;
@@ -362,65 +391,7 @@ namespace MySpotifyBillboard.Services
 
                 var artists = new List<Artist>();
 
-                // for every artist listed for the track, check if the artist already exist in the database.  if yes,
-                // pull that artist, otherwise, create a new artist
-                foreach (JsonArtist jsonArtist in item.artists)
-                {
-                    var artist = _billboardDbContext.Artists.FirstOrDefault(a => a.SpotifyArtistId == jsonArtist.id);
-
-                    if (artist == null)
-                    {
-                        artist = new Artist
-                        {
-                            Name = jsonArtist.name,
-                            OpenInSpotify = jsonArtist.external_urls.spotify,
-                            SpotifyArtistId = jsonArtist.id
-                        };
-
-                        _billboardDbContext.Artists.Add(artist);
-                    }
-
-                    artists.Add(artist);
-                }
-
-                var track = new Track
-                {
-                    AlbumId = item.album.id,
-                    AlbumName = item.album.name,
-                    AlbumOpenInSpotify = item.album.external_urls.spotify,
-                    LargeImage = item.album.images[0].url,
-                    LastUpdated = DateTime.Now,
-                    MediumImage = item.album.images[1].url,
-                    Name = item.name,
-                    OpenInSpotify = item.external_urls.spotify,
-                    Position = i,
-                    PreviousPosition = 0,
-                    SmallImage = item.album.images[2].url,
-                    SpotifyTrackId = item.id,
-                    TopTrackList = topTrackList,
-                    TimeAtNumberOne = 0,
-                    TimeOnChart = 1
-                };
-
-                _billboardDbContext.Tracks.Add(track);
-
-
-                // create trackArtist many to many relation, mapping every artist in artists to the given track
-                foreach (Artist artist in artists)
-                {
-                    if (!_billboardDbContext.TrackArtists.Any(
-                        ta => ta.ArtistId == artist.ArtistId && ta.TrackId == track.TrackId))
-                    {
-                        var trackArtist = new TrackArtist
-                        {
-                            TrackId = track.TrackId,
-                            ArtistId = artist.ArtistId
-                        };
-
-                        _billboardDbContext.TrackArtists.Add(trackArtist);
-                    }
-                }
-                _billboardDbContext.SaveChanges();
+                CreateTrackWithArtists(item, artists, i, topTrackList);
 
                 i++;
 
