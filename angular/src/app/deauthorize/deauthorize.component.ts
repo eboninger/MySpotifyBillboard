@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DeauthorizeUserService } from './../user/deauthorize-user.service'
 import { CookieService } from 'ngx-cookie-service'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-deauthorize',
@@ -11,7 +12,7 @@ export class DeauthorizeComponent implements OnInit {
   clearDataText: string
 
   constructor(private deauthorizeUserService: DeauthorizeUserService,
-    private cookieService: CookieService) { }
+    private cookieService: CookieService, private router: Router) { }
 
   ngOnInit() {
     this.clearDataText = "By clicking the above button, you are removing all of your information from our stores.  If you decided to begin using MySpotifyBillboard again, your record tracking will begin at zero days."
@@ -24,6 +25,11 @@ export class DeauthorizeComponent implements OnInit {
     
     this.deauthorizeUserService.deauthorizeUser(spotifyId);
     this.clearDataText = "Done!"
+  }
+
+  clearCookies() {
+    this.cookieService.deleteAll();
+    this.router.navigate(['']);
   }
 
 }

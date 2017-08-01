@@ -1,7 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, enableProdMode } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -14,7 +15,6 @@ import { DeauthorizeComponent } from './deauthorize/deauthorize.component'
 import { appRoutes } from './routes';
 
 import { KeyService } from './key.service';
-import { UserDataService } from './user-data.service';
 import { SerializeTracksService } from './home/serialize-tracks.service';
 import { CookieService } from 'ngx-cookie-service';
 import { DeauthorizeUserService } from './user/deauthorize-user.service';
@@ -22,7 +22,8 @@ import { SpotifyLogoComponent } from './spotify-logo/spotify-logo.component';
 import { RoundTwoDecPipe } from './round-two-dec.pipe';
 import { CreatePlaylistComponent } from './home/track-list/create-playlist/create-playlist.component';
 
-
+// uncomment line below to enable production mode
+// enableProdMode();
 
 
 @NgModule({
@@ -41,11 +42,11 @@ import { CreatePlaylistComponent } from './home/track-list/create-playlist/creat
   imports: [
     BrowserModule,
     HttpModule,
+    BrowserAnimationsModule,
     RouterModule.forRoot(appRoutes)
   ],
   providers: [
     KeyService,
-    UserDataService,
     SerializeTracksService,
     CookieService,
     DeauthorizeUserService

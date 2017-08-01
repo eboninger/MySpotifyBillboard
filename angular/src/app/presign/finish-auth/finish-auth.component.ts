@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Http, URLSearchParams } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { KeyService } from '../../key.service';
-import { UserDataService } from './../../user-data.service';
 import { CookieService } from 'ngx-cookie-service';
 import { User } from '../../user/user.model';
 import 'rxjs/add/operator/map'
@@ -14,11 +13,10 @@ import 'rxjs/add/operator/map'
 })
 export class FinishAuthComponent implements OnInit {
   recentlyPlayed = {};
-  userData = {}
 
   constructor(private http: Http, private activatedRoute: ActivatedRoute,
-               private keyService: KeyService, private router: Router,
-               private userDataService: UserDataService, private cookieService: CookieService) { }
+    private keyService: KeyService, private router: Router,
+    private cookieService: CookieService) { }
 
   ngOnInit() {
     let code = this.activatedRoute.snapshot.queryParams['code'];
@@ -29,10 +27,16 @@ export class FinishAuthComponent implements OnInit {
     params.set('scope', this.keyService.getSingleKey("Scope"));
 
     var response = this.http.get(this.keyService.getSingleKey('API-URL') + 'spotify/token', {
-      search: params }).map(res => res.json())
-      .subscribe(data => {
+      search: params
+    }).map(res => res.json())
+      .subscribe(
+      data => {
         this.cookieService.set('spotifyId', data["value"]["spotifyId"]);
-        this.router.navigate(['home'], { queryParams: { "spotifyId": data["value"]["spotifyId"], "time_frame": "long" }}
-      )});
+        this.router.navigate(['home'], { queryParams: { "spotifyId": data["value"]["spotifyId"], "time_frame": "long" } })
+      },
+      err => {
+        this.cookieService.deleteAll();
+        this.router.navigate(['']);
+      });
   }
 }

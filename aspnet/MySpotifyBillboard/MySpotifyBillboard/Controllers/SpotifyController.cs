@@ -71,9 +71,10 @@ namespace MySpotifyBillboard.Controllers
                             {
                                 return Ok(Json(newUser));
                             }
+                            return BadRequest();
                         }
                         // if the user scope has changed
-                        else if (existingUser.Scope != spotifyTokenParams.Scope)
+                        if (existingUser.Scope != spotifyTokenParams.Scope)
                         {
                             existingUser = _userRepository.UpdateUserWithNewScope(existingUser, spotifyConnectionData, spotifyTokenParams.Scope);
                         }
@@ -91,23 +92,27 @@ namespace MySpotifyBillboard.Controllers
         {
             var timeFrameQueryString = GetTimeFrameQueryString(timeFrame);
 
-            if (spotifyId == null || timeFrameQueryString == null)
+            // if query strings are not complete or do not conform to standards, return BadRequest
+            if (string.IsNullOrEmpty(spotifyId) || string.IsNullOrEmpty(timeFrameQueryString))
             {
                 return BadRequest();
             }
 
             var user = _userRepository.UserExists(spotifyId);
 
+            // if user does not exist, return not found
             if (user == null)
             {
                 return NotFound();
             }
 
+            // if user's session with the spotify API has expired, refresh that user's access token
             if (ExpiredAccessToken(user.ExpirationTime))
             {
                 user = await _userRepository.Refresh(user);
             }
 
+            // make a request to the spotify API server for the top 50 tracks in the requested time frame
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Constants.BASE_ADDRESS_API);
@@ -129,6 +134,11 @@ namespace MySpotifyBillboard.Controllers
         [HttpGet("playlist")]
         public async Task<IActionResult> CreatePlaylistForUser(string spotifyId, string timeFrame)
         {
+            if (string.IsNullOrEmpty(timeFrame))
+            {
+                return BadRequest();
+            }
+
             var timeFrameObj = AsTimeFrame(timeFrame);
 
             var user = _userRepository.UserExists(spotifyId);
@@ -143,6 +153,7 @@ namespace MySpotifyBillboard.Controllers
                 user = await _userRepository.Refresh(user);
             }
 
+            // format the name for the playist to be created (i.e. "Four Week Top Tracks (07/31/2017 16:42:40)" )
             CreatePlaylistDto requestContentDto = new CreatePlaylistDto
             {
                 name = TimeFrameForPlaylistName(timeFrameObj) + " Top Tracks (" + DateTime.Now.ToString(CultureInfo.InvariantCulture) + ")"
@@ -169,47 +180,47 @@ namespace MySpotifyBillboard.Controllers
                         return Ok(Json(rootObject.external_urls.spotify));
                     }
                 }
-                return NotFound();
+                return BadRequest();
             }
         }
 
         
-        [HttpGet("user")]
-        public async Task<IActionResult> UserInfo(string spotifyId)
-        {
-            if (spotifyId == null)
-            {
-                return BadRequest();
-            }
-
-            var user = _userRepository.UserExists(spotifyId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            if (ExpiredAccessToken(user.ExpirationTime))
-            {
-                var updatedUser = await _userRepository.Refresh(user);
-
-                // if user has revoked access token
-                if (updatedUser == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return Json(updatedUser);
-                }
-            }
-            // if the access token has expired
-            return Ok(Json(user));
-        }
+//        [HttpGet("user")]
+//        public async Task<IActionResult> UserInfo(string spotifyId)
+//        {
+//            if (string.IsNullOrEmpty(spotifyId))
+//            {
+//                return BadRequest();
+//            }
+//
+//            var user = _userRepository.UserExists(spotifyId);
+//
+//            if (user == null)
+//            {
+//                return NotFound();
+//            }
+//
+//            if (!ExpiredAccessToken(user.ExpirationTime)) return Ok(Json(user));
+//
+//            var updatedUser = await _userRepository.Refresh(user);
+//
+//            // if user has revoked access token
+//            if (updatedUser == null)
+//            {
+//                return NotFound();
+//            }
+//            return Json(updatedUser);
+//            // if the access token has expired
+//        }
 
         [HttpGet("deauthorize")]
         public IActionResult Deauthorize(string spotifyId)
         {
+            if (string.IsNullOrEmpty(spotifyId))
+            {
+                return BadRequest();
+            }
+
             var user = _userRepository.UserExists(spotifyId);
 
             if (user == null)
@@ -275,6 +286,7 @@ namespace MySpotifyBillboard.Controllers
             }
         }
 
+        // take the user query string and convert to TimeFrame enum
         private TimeFrame AsTimeFrame(string timeFrame)
         {
             switch (timeFrame)
@@ -288,6 +300,7 @@ namespace MySpotifyBillboard.Controllers
             }
         }
 
+        // take a time frame and convert to text for playlist name
         private string TimeFrameForPlaylistName(TimeFrame timeFrame)
         {
             switch (timeFrame)
@@ -301,7 +314,8 @@ namespace MySpotifyBillboard.Controllers
             }
         }
 
-
+        // given a playlist id, a user, and a time frame, add all tracks from that user's TopTrackList in the given
+        // time frame to the playlist with the given id
         private async Task<bool> AddTracksToPlaylist(string playlistId, User user, TimeFrame timeFrame)
         {
             var addToPlaylistDto = _userRepository.GetUrisFromUserTopTrackList(user, timeFrame);
@@ -317,17 +331,13 @@ namespace MySpotifyBillboard.Controllers
                 HttpResponseMessage response = await client.PostAsync("v1/users/" + user.SpotifyId + "/playlists/" + playlistId + "/tracks",
                     new StringContent(requestContentString, Encoding.UTF8, "application/json"));
                 var responseString = await response.Content.ReadAsStringAsync();
-                Debug.WriteLine("RESPONSE: " + responseString);
 
 
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
         }
     }
