@@ -16,3 +16,20 @@ a:active {color:black;}
 .pos-img {
     width: 1em;
 }
+
+.tracklist {
+    padding-top: 100px;
+}
+
+@media screen and (max-width: 1000px) {
+    .tracklist { padding-top: 250px; }
+}
+
+.table-inverse {
+    background-color: white;
+    color: black;
+}
+
+.thead-inverse th {
+    color: rgba(230,125,226,0.7);
+}

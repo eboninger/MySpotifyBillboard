@@ -1,0 +1,7 @@
+.navbar-inverse .navbar-brand, .navbar-inverse .navbar-toggler {
+    color: rgb(230,125,226);
+}
+
+.navbar-inverse .navbar-nav .nav-link {
+    color: rgba(230,125,226,0.7);
+}
