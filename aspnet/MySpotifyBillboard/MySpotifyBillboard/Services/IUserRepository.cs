@@ -38,5 +38,9 @@ namespace MySpotifyBillboard.Services
         JObject UpdateUserCharts(User user, string topTrackData, TimeFrame timeFrame);
 
         AddToPlaylistDto GetUrisFromUserTopTrackList(User user, TimeFrame timeFrame);
+
+        bool TTLHasBeenUpdatedRecently(User user, TimeFrame timeFrame);
+
+        JObject CreateTopTrackListDto(User user, TimeFrame timeFrame);
     }
 }

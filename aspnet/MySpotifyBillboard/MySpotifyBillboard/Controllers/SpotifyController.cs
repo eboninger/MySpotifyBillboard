@@ -91,6 +91,7 @@ namespace MySpotifyBillboard.Controllers
         public async Task<IActionResult> TopTracks([FromQuery] string spotifyId, string timeFrame)
         {
             var timeFrameQueryString = GetTimeFrameQueryString(timeFrame);
+            var timeFrameObj = AsTimeFrame(timeFrame);
 
             // if query strings are not complete or do not conform to standards, return BadRequest
             if (string.IsNullOrEmpty(spotifyId) || string.IsNullOrEmpty(timeFrameQueryString))
@@ -112,24 +113,16 @@ namespace MySpotifyBillboard.Controllers
                 user = await _userRepository.Refresh(user);
             }
 
-            // make a request to the spotify API server for the top 50 tracks in the requested time frame
-            using (var client = new HttpClient())
+            if (_userRepository.TTLHasBeenUpdatedRecently(user, timeFrameObj))
             {
-                client.BaseAddress = new Uri(Constants.BASE_ADDRESS_API);
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue(user.TokenType, user.AccessToken);
-
-                HttpResponseMessage response = await client.GetAsync("v1/me/top/tracks?limit=50&time_range=" + timeFrameQueryString);
-                var responseString = await response.Content.ReadAsStringAsync();
-
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return Ok(_userRepository.UpdateUserCharts(user, responseString, AsTimeFrame(timeFrame)));
-                }
-                return NotFound();
+                return Ok(_userRepository.CreateTopTrackListDto(user, timeFrameObj));
             }
+
+
+
+            return await MakeTopTracksRequest(timeFrame, user, timeFrameQueryString);
         }
+
 
         [HttpGet("playlist")]
         public async Task<IActionResult> CreatePlaylistForUser(string spotifyId, string timeFrame)
@@ -161,57 +154,9 @@ namespace MySpotifyBillboard.Controllers
 
             var requestContentString = JsonConvert.SerializeObject(requestContentDto);
 
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Constants.BASE_ADDRESS_API);
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue(user.TokenType, user.AccessToken);
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage response = await client.PostAsync("v1/users/" + user.SpotifyId + "/playlists", 
-                    new StringContent(requestContentString, Encoding.UTF8, "application/json"));
-                var responseString = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var rootObject = JsonConvert.DeserializeObject<PlaylistRootObject>(responseString);
-                    if (await AddTracksToPlaylist(rootObject.id, user, timeFrameObj))
-                    {
-                        return Ok(Json(rootObject.external_urls.spotify));
-                    }
-                }
-                return BadRequest();
-            }
+            return await MakePlaylistRequest(user, requestContentString, timeFrameObj);
         }
 
-        
-//        [HttpGet("user")]
-//        public async Task<IActionResult> UserInfo(string spotifyId)
-//        {
-//            if (string.IsNullOrEmpty(spotifyId))
-//            {
-//                return BadRequest();
-//            }
-//
-//            var user = _userRepository.UserExists(spotifyId);
-//
-//            if (user == null)
-//            {
-//                return NotFound();
-//            }
-//
-//            if (!ExpiredAccessToken(user.ExpirationTime)) return Ok(Json(user));
-//
-//            var updatedUser = await _userRepository.Refresh(user);
-//
-//            // if user has revoked access token
-//            if (updatedUser == null)
-//            {
-//                return NotFound();
-//            }
-//            return Json(updatedUser);
-//            // if the access token has expired
-//        }
 
         [HttpGet("deauthorize")]
         public IActionResult Deauthorize(string spotifyId)
@@ -231,17 +176,6 @@ namespace MySpotifyBillboard.Controllers
             _userRepository.DeleteUser(user);
             return Ok();
         }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -338,6 +272,55 @@ namespace MySpotifyBillboard.Controllers
                     return true;
                 }
                 return false;
+            }
+        }
+
+        // make request to the spotify api for a playlist to be made from the TopTrackList belonging to user in the given timeFrame
+        // set the request body to be requestContentString
+        private async Task<IActionResult> MakePlaylistRequest(User user, string requestContentString, TimeFrame timeFrameObj)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Constants.BASE_ADDRESS_API);
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue(user.TokenType, user.AccessToken);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage response = await client.PostAsync("v1/users/" + user.SpotifyId + "/playlists",
+                    new StringContent(requestContentString, Encoding.UTF8, "application/json"));
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var rootObject = JsonConvert.DeserializeObject<PlaylistRootObject>(responseString);
+                    if (await AddTracksToPlaylist(rootObject.id, user, timeFrameObj))
+                    {
+                        return Ok(Json(rootObject.external_urls.spotify));
+                    }
+                }
+                return BadRequest();
+            }
+        }
+
+        // make a request to the spotify API server for the user's top 50 tracks in the requested time frame
+        private async Task<IActionResult> MakeTopTracksRequest(string timeFrame, User user, string timeFrameQueryString)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Constants.BASE_ADDRESS_API);
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue(user.TokenType, user.AccessToken);
+
+                HttpResponseMessage response =
+                    await client.GetAsync("v1/me/top/tracks?limit=50&time_range=" + timeFrameQueryString);
+                var responseString = await response.Content.ReadAsStringAsync();
+
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return Ok(_userRepository.UpdateUserCharts(user, responseString, AsTimeFrame(timeFrame)));
+                }
+                return NotFound();
             }
         }
     }

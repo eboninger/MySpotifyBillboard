@@ -188,6 +188,75 @@ namespace MySpotifyBillboard.Services
             return trackUris;
         }
 
+        public bool TTLHasBeenUpdatedRecently(User user, TimeFrame timeFrame)
+        {
+            var currentTopTrackList =
+                _billboardDbContext.TopTrackLists.FirstOrDefault(
+                    ttl => (ttl.User.Id == user.Id) && (ttl.TimeFrame == timeFrame));
+
+            if (currentTopTrackList == null)
+            {
+                return false;
+            }
+
+            if ((DateTime.Now - currentTopTrackList.LastUpdated) > TimeSpan.FromHours(1))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public JObject CreateTopTrackListDto(User user, TimeFrame timeFrame)
+        {
+            var userLists = user.TopTrackLists.ToList();
+            var listId = userLists.Find(ul => ul.TimeFrame == timeFrame).TopTrackListId;
+            var listToConvert = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == listId).OrderBy(t => t.Position).ToList();
+            var allTrackArtists = _billboardDbContext.TrackArtists.ToList();
+
+            var topTrackListDto = new TopTrackListDto
+            {
+                Tracks = new List<TopTrackListDtoTrack>()
+            };
+
+            foreach (Track track in listToConvert)
+            {
+                var trackArtists = allTrackArtists.FindAll(ta => ta.TrackId == track.TrackId);
+                var artists = new List<TopTrackListDtoArtist>();
+
+                foreach (TrackArtist ta in trackArtists)
+                {
+                    var artist = _billboardDbContext.Artists.FirstOrDefault(a => a.ArtistId == ta.ArtistId);
+                    artists.Add(new TopTrackListDtoArtist
+                    {
+                        Id = artist.SpotifyArtistId,
+                        Name = artist.Name,
+                        OpenInSpotify = artist.OpenInSpotify
+                    });
+                }
+
+                topTrackListDto.Tracks.Add(new TopTrackListDtoTrack
+                {
+                    AlbumId = track.AlbumId,
+                    AlbumName = track.AlbumName,
+                    AlbumOpenInSpotify = track.AlbumOpenInSpotify,
+                    Artists = artists,
+                    Id = track.SpotifyTrackId,
+                    LargeImage = track.LargeImage,
+                    MediumImage = track.MediumImage,
+                    Name = track.Name,
+                    OpenInSpotify = track.OpenInSpotify,
+                    PreviousPosition = track.PreviousPosition,
+                    SmallImage = track.SmallImage,
+                    TimeOnChart = track.TimeOnChart,
+                    TimeAtNumberOne = track.TimeAtNumberOne
+                });
+            }
+
+
+            return JObject.Parse(JsonConvert.SerializeObject(topTrackListDto));
+        }
+
 
         /********************************************************************************************************/
         /******************************PRIVATE*HELPER*METHODS****************************************************/
@@ -293,56 +362,6 @@ namespace MySpotifyBillboard.Services
                     _billboardDbContext.TrackArtists.Add(trackArtist);
                 }
             }
-        }
-
-        private JObject CreateTopTrackListDto(User user, TimeFrame timeFrame)
-        {
-            var userLists = user.TopTrackLists.ToList();
-            var listId = userLists.Find(ul => ul.TimeFrame == timeFrame).TopTrackListId;
-            var listToConvert = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == listId).OrderBy(t => t.Position).ToList();
-            var allTrackArtists = _billboardDbContext.TrackArtists.ToList();
-
-            var topTrackListDto = new TopTrackListDto
-            {
-                Tracks = new List<TopTrackListDtoTrack>()
-            };
-
-            foreach (Track track in listToConvert)
-            {
-                var trackArtists = allTrackArtists.FindAll(ta => ta.TrackId == track.TrackId);
-                var artists = new List<TopTrackListDtoArtist>();
-
-                foreach (TrackArtist ta in trackArtists)
-                {
-                   var artist = _billboardDbContext.Artists.FirstOrDefault(a => a.ArtistId == ta.ArtistId);
-                    artists.Add(new TopTrackListDtoArtist
-                    {
-                        Id = artist.SpotifyArtistId,
-                        Name = artist.Name,
-                        OpenInSpotify = artist.OpenInSpotify
-                    });
-                }
-
-                topTrackListDto.Tracks.Add(new TopTrackListDtoTrack
-                {
-                    AlbumId = track.AlbumId,
-                    AlbumName = track.AlbumName,
-                    AlbumOpenInSpotify = track.AlbumOpenInSpotify,
-                    Artists = artists,
-                    Id = track.SpotifyTrackId,
-                    LargeImage = track.LargeImage,
-                    MediumImage = track.MediumImage,
-                    Name = track.Name,
-                    OpenInSpotify = track.OpenInSpotify,
-                    PreviousPosition = track.PreviousPosition,
-                    SmallImage = track.SmallImage,
-                    TimeOnChart = track.TimeOnChart,
-                    TimeAtNumberOne = track.TimeAtNumberOne
-                });
-            }
-
-
-            return JObject.Parse(JsonConvert.SerializeObject(topTrackListDto));
         }
 
 
