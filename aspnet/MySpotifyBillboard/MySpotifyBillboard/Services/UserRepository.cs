@@ -38,6 +38,12 @@ namespace MySpotifyBillboard.Services
                 return null;
             }
 
+            if (string.IsNullOrEmpty((string)jsonResponse["display_name"]) || string.IsNullOrEmpty((string)jsonResponse["email"]) ||
+                                                                                string.IsNullOrEmpty((string)jsonResponse["id"]))
+            {
+                return null;
+            }
+
             var newUser = new User
             {
                 AccessToken = spotifyConnectionData.access_token,
@@ -56,6 +62,7 @@ namespace MySpotifyBillboard.Services
             return newUser;
         }
 
+        // CONTRACT: will return null if the request fails, otherwise returns a JObject with the user information
         public async Task<JObject> GetUserInfo(SpotifyConnectionDataDto spotifyConnectionData)
         {
             using (var client = new HttpClient())
