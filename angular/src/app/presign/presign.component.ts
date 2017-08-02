@@ -13,7 +13,7 @@ export class PresignComponent implements OnInit {
   isSignedIn: boolean
 
   constructor(private keyService: KeyService, private activatedRoute: ActivatedRoute,
-               private router: Router, private cookieService: CookieService) { }
+    private router: Router, private cookieService: CookieService) { }
 
   ngOnInit() {
     // if (this.activatedRoute.snapshot.queryParams["spotifyId"] == null) {
@@ -21,11 +21,11 @@ export class PresignComponent implements OnInit {
     if (spotifyId == null || spotifyId == "") {
       this.isSignedIn = false;
       var authorizationParams = this.keyService.getKeys();
-      var state = "a23984kjh9a8khqawdcxmnbw9"
+      var state = this.makeState();
       this.authorizeUri = this.constructUri(authorizationParams, state);
     } else {
       this.isSignedIn = true;
-      this.router.navigate(['home'], { queryParams: { "spotifyId": spotifyId, "time_frame": "long" }})
+      this.router.navigate(['home'], { queryParams: { "spotifyId": spotifyId, "time_frame": "long" } })
     }
   }
 
@@ -36,6 +36,17 @@ export class PresignComponent implements OnInit {
       params.RedirectURI +
       "&scope=" + this.keyService.getSingleKey("Scope") + "&state=" +
       state;
+  }
+
+  makeState(): string {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < 20; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+
   }
 
 }

@@ -3,6 +3,7 @@ import { NgModule, enableProdMode, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BusyModule } from 'angular2-busy'
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -21,6 +22,7 @@ import { DeauthorizeUserService } from './user/deauthorize-user.service';
 import { SpotifyLogoComponent } from './spotify-logo/spotify-logo.component';
 import { RoundTwoDecPipe } from './round-two-dec.pipe';
 import { CreatePlaylistComponent } from './home/track-list/create-playlist/create-playlist.component';
+import { RecordsComponent } from './home/records/records.component';
 
 // uncomment line below to enable production mode
 // enableProdMode();
@@ -37,12 +39,14 @@ import { CreatePlaylistComponent } from './home/track-list/create-playlist/creat
     DeauthorizeComponent,
     SpotifyLogoComponent,
     RoundTwoDecPipe,
-    CreatePlaylistComponent
+    CreatePlaylistComponent,
+    RecordsComponent
   ],
   imports: [
     BrowserModule,
     HttpModule,
     BrowserAnimationsModule,
+    BusyModule,
     RouterModule.forRoot(appRoutes)
   ],
   providers: [
