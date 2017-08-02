@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeauthorizeComponent } from './deauthorize.component';
+import { CookieService } from 'ngx-cookie-service';
+import { DeauthorizeUserService } from './../user/deauthorize-user.service'
 
 describe('DeauthorizeComponent', () => {
   let component: DeauthorizeComponent;
@@ -8,7 +10,11 @@ describe('DeauthorizeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeauthorizeComponent ]
+      declarations: [ DeauthorizeComponent ],
+      providers: [
+        CookieService,
+        DeauthorizeUserService
+      ]
     })
     .compileComponents();
   }));
@@ -19,7 +25,5 @@ describe('DeauthorizeComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should be created', () => {
-    expect(component).toBeTruthy();
-  });
+  
 });

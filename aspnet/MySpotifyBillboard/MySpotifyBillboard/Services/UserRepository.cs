@@ -206,12 +206,7 @@ namespace MySpotifyBillboard.Services
                 return false;
             }
 
-            if ((DateTime.Now - currentTopTrackList.LastUpdated) > TimeSpan.FromHours(1))
-            {
-                return false;
-            }
-
-            return true;
+            return (DateTime.Now - currentTopTrackList.LastUpdated) <= TimeSpan.FromHours(1);
         }
 
         public JObject CreateTopTrackListDto(User user, TimeFrame timeFrame)
@@ -406,10 +401,12 @@ namespace MySpotifyBillboard.Services
                         {
                             existingTrack.TimeOnChart++;
                         }
-                            
+
+                        existingTrack.LastUpdated = DateTime.Now;
+
                     }
                     existingTrack.TopTrackList = topTrackList;
-                    existingTrack.LastUpdated = DateTime.Now;
+                    
                     i++;
                     _billboardDbContext.SaveChanges();
                     continue;

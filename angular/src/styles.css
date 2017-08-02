@@ -4,10 +4,10 @@
 
 
 body {
-    font-family: 'Bitter', serif;
-    background-image: url('./assets/static/img/purple-bricks.jpg');
+    font-family: 'Open Sans', sans serif, 'Bitter', serif;
+    /* background-image: url('./assets/static/img/purple-bricks.jpg'); */
 }
 
 button {
-    font-family: 'Bitter', serif;
+    font-family: 'Open Sans', sans serif, 'Bitter', serif;
 }

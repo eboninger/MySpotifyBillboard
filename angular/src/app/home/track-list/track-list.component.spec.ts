@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TrackListComponent } from './track-list.component';
+import { RoundTwoDecPipe } from './../../round-two-dec.pipe'
+import { CreatePlaylistComponent } from './create-playlist/create-playlist.component'
+import { RouterTestingModule } from '@angular/router/testing'
 
 describe('TrackListComponent', () => {
   let component: TrackListComponent;
@@ -8,7 +11,14 @@ describe('TrackListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TrackListComponent ]
+      declarations: [ 
+        TrackListComponent,
+        RoundTwoDecPipe,
+        CreatePlaylistComponent
+      ],
+      imports: [
+        RouterTestingModule
+      ]
     })
     .compileComponents();
   }));
@@ -19,7 +29,5 @@ describe('TrackListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should be created', () => {
-    expect(component).toBeTruthy();
-  });
+
 });

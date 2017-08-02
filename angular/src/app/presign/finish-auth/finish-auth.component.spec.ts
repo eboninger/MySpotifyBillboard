@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinishAuthComponent } from './finish-auth.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { CookieService } from 'ngx-cookie-service';
+import { KeyService } from '../../key.service';
 
 describe('FinishAuthComponent', () => {
   let component: FinishAuthComponent;
@@ -8,7 +11,16 @@ describe('FinishAuthComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FinishAuthComponent ]
+      declarations: [ 
+        FinishAuthComponent,
+      ],
+      imports: [
+        RouterTestingModule
+      ],
+      providers: [
+        CookieService,
+        KeyService
+      ]
     })
     .compileComponents();
   }));
@@ -19,7 +31,4 @@ describe('FinishAuthComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should be created', () => {
-    expect(component).toBeTruthy();
-  });
 });

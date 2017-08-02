@@ -13,8 +13,9 @@ export class CreatePlaylistComponent implements OnInit {
   linkToPlaylist: string
   buttonText: string = "Export Playlist To Spotify"
 
-  constructor(private activatedRoute: ActivatedRoute, private http: Http,
-    private cookieService: CookieService, private keyService: KeyService) { }
+  constructor(private activatedRoute: ActivatedRoute, 
+    private cookieService: CookieService, private keyService: KeyService,
+    private http: Http) { }
 
   ngOnInit() {
   }

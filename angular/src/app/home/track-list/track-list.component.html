@@ -35,7 +35,8 @@
             <img class="pos-img" *ngIf="track.PreviousPosition < (i + 1)" src="../../../assets/static/img/down-arrow.png" />
             <img class="pos-img" *ngIf="track.PreviousPosition > (i + 1)" src="../../../assets/static/img/up-arrow.png" />
           </td>
-          <td *ngIf="track.PreviousPosition == 0">New To Chart</td>
+          <!-- empty column to fill the space for highlighting -->
+          <td *ngIf="track.PreviousPosition == 0"></td> 
       </tr>
     </tbody>
   </table>

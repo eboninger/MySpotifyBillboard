@@ -17,9 +17,9 @@ export class HomeComponent implements OnInit {
 
 
   constructor(private activatedRoute: ActivatedRoute,
-    private http: Http, private serializeTracksService: SerializeTracksService,
+     private serializeTracksService: SerializeTracksService,
     private router: Router, private cookieService: CookieService,
-    private keyService: KeyService) {
+    private keyService: KeyService, private http: Http) {
     router.events.subscribe((event) => {
       if ((event instanceof NavigationEnd) && (this.cookieService.get("spotifyId") != null)) {
         this.getTopTracks();

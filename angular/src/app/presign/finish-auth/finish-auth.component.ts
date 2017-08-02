@@ -14,9 +14,9 @@ import 'rxjs/add/operator/map'
 export class FinishAuthComponent implements OnInit {
   recentlyPlayed = {};
 
-  constructor(private http: Http, private activatedRoute: ActivatedRoute,
+  constructor(private activatedRoute: ActivatedRoute,
     private keyService: KeyService, private router: Router,
-    private cookieService: CookieService) { }
+    private cookieService: CookieService, private http: Http) { }
 
   ngOnInit() {
     let code = this.activatedRoute.snapshot.queryParams['code'];
