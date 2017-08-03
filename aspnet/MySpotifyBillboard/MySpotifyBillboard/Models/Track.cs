@@ -8,6 +8,8 @@ namespace MySpotifyBillboard.Models
 {
     public class Track
     {
+        public Track() { }
+
 
         public Track(string albumName, string albumId, string albumOIS, string largeImage, DateTime lastUpdated,
             string mediumImage, string name, string openInSpotify, int position, int previousPosition, string smallImage,

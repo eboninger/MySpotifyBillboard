@@ -1,15 +1,8 @@
 <div class="records">
   <h3>Chart Records</h3>
   <br>
-  <div><strong>Longest Time Spent at Number One:</strong></div>
-  <div>{{longNumberOne}}</div>
-  <br>
-  <div><strong>Longest Time In Chart</strong></div>
-  <div>{{longTime}}</div>
-  <br>
-  <div><strong>Most Consecutive Days at Number One</strong></div>
-  <div>{{longNumberOneCons}}</div>
-  <br>
-  <div><strong>Most Consecutive Days In Chart</strong></div>
-  <div>{{longTimeCons}}</div>
+  <app-single-record [headline]="'Longest Time Spent At Number One'" [tracks]="longNumberOnes" [trackField]="'TimeAtNumberOne'"></app-single-record>
+  <app-single-record [headline]="'Longest Time In Chart'" [tracks]="longTimes" [trackField]="'TimeOnChart'"></app-single-record>
+  <app-single-record [headline]="'Most Consecutive Days At Number One'" [tracks]="longNumberOneCons"></app-single-record>
+  <app-single-record [headline]="'Most Consecutive Days In Chart'" [track]="longTimeCons"></app-single-record>
 </div>

@@ -45,7 +45,7 @@ export class TrackListComponent implements OnInit {
         if (res == null) {
           return;
         }
-        this.tracks = this.serializeTracksService.separate(res.json());
+        this.tracks = this.serializeTracksService.separate(res.json(), "Tracks");
       },
       err => {
         // error message - separate page?

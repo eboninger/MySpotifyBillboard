@@ -15,6 +15,8 @@ namespace MySpotifyBillboard.Models
 
     public class RecordsDtoTrack
     {
+        public RecordsDtoTrack() { }
+
         public RecordsDtoTrack(string albumName, string albumId, string albumOIS, ICollection<RecordsDtoArtist> artists,
                                 string id, string largeImage, string mediumImage, string name, string OIS, int previousPosition,
                                 string smallImage, int timeAtNumberOne, int timeOnChart)

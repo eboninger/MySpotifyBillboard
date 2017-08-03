@@ -1,0 +1,10 @@
+<div *ngIf="tracks != null">
+  <div><strong>{{headline}}</strong></div>
+  <div *ngFor="let track of tracks">
+    <div *ngIf="(track != null) && (track[trackField] != 0)" >
+      <a title="Open In Spotify" [attr.href]="track?.OpenInSpotify">{{track?.Name}}</a>
+      <span> ({{track[trackField]}} days)</span>
+    </div>
+  </div>
+  <br>
+</div>

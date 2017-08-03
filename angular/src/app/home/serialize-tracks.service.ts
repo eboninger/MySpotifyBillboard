@@ -7,29 +7,13 @@ export class SerializeTracksService {
 
   constructor() { }
 
-  separate(receivedData: any) {
-    // let tracks: Track[] = []
-    // let asObj = (JSON.parse(receivedData))["items"]
-
-    // asObj.forEach(track => {
-    //   let artists: Artist[] = []
-    //   track["artists"].forEach(artist => {
-    //     artists.push(new Artist(artist["id"], artist["name"], artist["external_urls"]["spotify"]))
-    //   })
-    //   tracks.push(new Track(track["album"]["name"], 
-    //                         track["album"]["id"], 
-    //                         track["album"]["external_urls"]["spotify"],
-    //                         artists,
-    //                         track["id"],
-    //                         track["album"]["images"][0]["url"],
-    //                         track["album"]["images"][1]["url"],
-    //                         track["name"],
-    //                         track["external_urls"]["spotify"],
-    //                         track["album"]["images"][2]["url"]))
-    // });
-
+  separate(receivedData: any, outerField: string) {
     let tracks: Track[] = []
-    let asObj = receivedData["Tracks"]
+    let asObj = receivedData[outerField]
+
+    if (asObj == null) {
+      return null;
+    }
 
     asObj.forEach(track => {
       let artists: Artist[] = []

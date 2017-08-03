@@ -23,6 +23,7 @@ import { SpotifyLogoComponent } from './spotify-logo/spotify-logo.component';
 import { RoundTwoDecPipe } from './round-two-dec.pipe';
 import { CreatePlaylistComponent } from './home/track-list/create-playlist/create-playlist.component';
 import { RecordsComponent } from './home/records/records.component';
+import { SingleRecordComponent } from './home/records/single-record/single-record.component';
 
 // uncomment line below to enable production mode
 // enableProdMode();
@@ -40,7 +41,8 @@ import { RecordsComponent } from './home/records/records.component';
     SpotifyLogoComponent,
     RoundTwoDecPipe,
     CreatePlaylistComponent,
-    RecordsComponent
+    RecordsComponent,
+    SingleRecordComponent
   ],
   imports: [
     BrowserModule,
