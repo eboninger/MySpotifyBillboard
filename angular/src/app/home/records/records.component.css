@@ -1,9 +1,14 @@
 .records {
-    padding-top: 100px;
+    padding-top: 30px;
     width: 30%;
     float: right;
 }
 
 @media screen and (max-width: 1000px) {
-    .records { padding-top: 250px; }
+    .records {
+         float: none;
+         padding-left: 15px;
+         width: 70%;
+         padding-bottom: 80px;
+    }
 }

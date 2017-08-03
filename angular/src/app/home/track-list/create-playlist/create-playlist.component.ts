@@ -23,7 +23,7 @@ export class CreatePlaylistComponent implements OnInit {
   export() {
     let params = new URLSearchParams();
     params.set('spotifyId', this.cookieService.get("spotifyId"));
-    params.set('timeFrame', this.activatedRoute.snapshot.queryParams["time_frame"])
+    params.set('timeFrame', this.activatedRoute.snapshot.queryParams["timeFrame"])
     this.http.get(this.keyService.getSingleKey('API-URL') + 'spotify/playlist', { search: params })
       .subscribe(res => {
         if (res == null) {

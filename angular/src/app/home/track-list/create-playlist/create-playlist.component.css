@@ -5,3 +5,10 @@
     right: 8rem;
     background-color: black;
 }
+
+ @media screen and (max-width: 1000px) {
+    .create-playlist { 
+        bottom: 3rem;
+        right: 1rem;
+    }
+ }

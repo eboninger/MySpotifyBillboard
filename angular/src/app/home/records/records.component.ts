@@ -34,8 +34,7 @@ export class RecordsComponent implements OnInit {
   async getRecords() {
     let params = new URLSearchParams();
     params.set('spotifyId', this.cookieService.get("spotifyId"));
-    params.set('timeFrame', this.activatedRoute.snapshot.queryParams["time_frame"])
-    console.log(params);
+    params.set('timeFrame', this.activatedRoute.snapshot.queryParams["timeFrame"])
     await this.http.get(this.keyService.getSingleKey('API-URL') + 'spotify/records', { search: params })
       .subscribe(
       res => {

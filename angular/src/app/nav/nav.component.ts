@@ -40,7 +40,7 @@ export class NavComponent implements OnInit {
   }
 
   checkIfActive(timeFrame: string) {
-    let activeTimeFrame = this.activatedRoute.queryParams["spotifyId"];
+    let activeTimeFrame = this.activatedRoute.queryParams["timeFrame"];
 
     if (activeTimeFrame == null || activeTimeFrame == "") {
       return [];

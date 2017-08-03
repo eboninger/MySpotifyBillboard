@@ -38,7 +38,7 @@ export class TrackListComponent implements OnInit {
   async getTopTracks() {
     let params = new URLSearchParams();
     params.set('spotifyId', this.cookieService.get("spotifyId"));
-    params.set('timeFrame', this.activatedRoute.snapshot.queryParams["time_frame"])
+    params.set('timeFrame', this.activatedRoute.snapshot.queryParams["timeFrame"])
     this.busy = await this.http.get(this.keyService.getSingleKey('API-URL') + 'spotify/top_tracks', { search: params })
       .subscribe(
       res => {

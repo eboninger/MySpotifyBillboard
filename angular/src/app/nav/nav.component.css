@@ -13,3 +13,7 @@
 .navbar-inverse .navbar-right li {
     text-align: right;
 }
+
+.active {
+    color: white;
+}

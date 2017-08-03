@@ -18,16 +18,15 @@ a:active {color:black;}
 }
 
 .tracklist {
-    padding-top: 100px;
+    padding-top: 30px;
     width: 65%;
     float: left;
     position: relative;
 }
 
-@media screen and (max-width: 1000px) {
+ @media screen and (max-width: 1000px) {
     .tracklist { 
-         padding-top: 250px; 
         width: 100%;
     }
     
-}
+} 

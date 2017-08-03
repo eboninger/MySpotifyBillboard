@@ -32,7 +32,7 @@ export class FinishAuthComponent implements OnInit {
       .subscribe(
       data => {
         this.cookieService.set('spotifyId', data["value"]["spotifyId"]);
-        this.router.navigate(['home'], { queryParams: { "spotifyId": data["value"]["spotifyId"], "time_frame": "long" } })
+        this.router.navigate(['home'], { queryParams: { "spotifyId": data["value"]["spotifyId"], "timeFrame": "long" } })
       },
       err => {
         this.cookieService.deleteAll();
