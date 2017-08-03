@@ -37,9 +37,14 @@ namespace MySpotifyBillboard.Services
         // update user database with top track info from spotify API, return updated user
         JObject UpdateUserCharts(User user, string topTrackData, TimeFrame timeFrame);
 
+        // return dto for adding spotify URIs to a user's playlist for the given time frame
         AddToPlaylistDto GetUrisFromUserTopTrackList(User user, TimeFrame timeFrame);
 
+        // return true if the top track list has been updated in the past hour
         bool TTLHasBeenUpdatedRecently(User user, TimeFrame timeFrame);
+
+        // create dto for return chart records in the given time frame to the user
+        JObject CreateRecordsDto(User user, TimeFrame timeFrame);
 
         JObject CreateTopTrackListDto(User user, TimeFrame timeFrame);
     }

@@ -8,6 +8,30 @@ namespace MySpotifyBillboard.Models
 {
     public class Track
     {
+
+        public Track(string albumName, string albumId, string albumOIS, string largeImage, DateTime lastUpdated,
+            string mediumImage, string name, string openInSpotify, int position, int previousPosition, string smallImage,
+            string spotifyTrackId, string spotifyUri, int timeAtNumberOne, int timeOnChart, TopTrackList topTrackList)
+        {
+            AlbumName = albumName;
+            AlbumId = albumId;
+            AlbumOpenInSpotify = albumOIS;
+            LargeImage = largeImage;
+            LastUpdated = lastUpdated;
+            MediumImage = mediumImage;
+            Name = name;
+            OpenInSpotify = openInSpotify;
+            Position = position;
+            PreviousPosition = previousPosition;
+            SmallImage = smallImage;
+            SpotifyTrackId = spotifyTrackId;
+            SpotifyURI = spotifyUri;
+            TimeAtNumberOne = timeAtNumberOne;
+            TimeOnChart = timeOnChart;
+            TopTrackList = topTrackList;
+
+        }
+
         [Required]
         public string AlbumName { get; set; }
 

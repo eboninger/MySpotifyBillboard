@@ -152,11 +152,6 @@ namespace MySpotifyBillboard.Services
 
         public JObject UpdateUserCharts(User user, string topTrackData, TimeFrame timeFrame)
         {
-            if (user.TopTrackLists == null)
-            {
-                user.TopTrackLists = new List<TopTrackList>();
-            }
-
             var rootObject = JsonConvert.DeserializeObject<RootObject>(topTrackData);
             var currentTopTrackList =
                 _billboardDbContext.TopTrackLists.FirstOrDefault(
@@ -167,12 +162,10 @@ namespace MySpotifyBillboard.Services
             if (currentTopTrackList == null)
             {
                 user = NewTTL(user, rootObject, timeFrame);
+                return CreateTopTrackListDto(user, timeFrame);
             }
-            // if the list does exist and hasn't been updated within the past hour, update it
-            else if ((DateTime.Now - currentTopTrackList.LastUpdated) > TimeSpan.FromHours(1))
-            {
-                user = UpdateTTL(currentTopTrackList, user, rootObject, timeFrame);
-            }
+
+            user = UpdateTTL(currentTopTrackList, user, rootObject, timeFrame);
 
             return CreateTopTrackListDto(user, timeFrame);
         }
@@ -209,11 +202,35 @@ namespace MySpotifyBillboard.Services
             return (DateTime.Now - currentTopTrackList.LastUpdated) <= TimeSpan.FromHours(1);
         }
 
+        public JObject CreateRecordsDto(User user, TimeFrame timeFrame)
+        {
+            var topTrackList = _billboardDbContext.TopTrackLists.FirstOrDefault(ttl => (ttl.TimeFrame == timeFrame) && (ttl.User.Id == user.Id));
+
+            if (topTrackList == null)
+            {
+                return null;
+            }
+
+            var tracks = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == topTrackList.TopTrackListId).ToList();
+
+            var numberOnes = tracks.OrderByDescending(t => t.TimeAtNumberOne).Take(3);
+            var topInCharts = tracks.OrderByDescending(t => t.TimeOnChart).Take(3);
+
+            var recordsDto = new RecordsDto
+            {
+                LongestNumberOne = CreateSingleRecordList(numberOnes),
+                LongestTimeInChart = CreateSingleRecordList(topInCharts),
+                LongestNumberOneCons = null,
+                LongestTimeInChartCons = null
+            };
+
+            return JObject.Parse(JsonConvert.SerializeObject(recordsDto));
+        }
+
         public JObject CreateTopTrackListDto(User user, TimeFrame timeFrame)
         {
-            var userLists = user.TopTrackLists.ToList();
-            var listId = userLists.Find(ul => ul.TimeFrame == timeFrame).TopTrackListId;
-            var listToConvert = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == listId).OrderBy(t => t.Position).ToList();
+            var listId = _billboardDbContext.TopTrackLists.FirstOrDefault(ttl => (ttl.TimeFrame == timeFrame) && (ttl.User.Id == user.Id)).TopTrackListId;
+            var listToConvert = _billboardDbContext.Tracks.Where(t => (t.TopTrackList.TopTrackListId == listId) && (t.Position != 0)).OrderBy(t => t.Position).ToList();
             var allTrackArtists = _billboardDbContext.TrackArtists.ToList();
 
             var topTrackListDto = new TopTrackListDto
@@ -287,8 +304,6 @@ namespace MySpotifyBillboard.Services
             topTrackList.TimeFrame = timeFrame;
             topTrackList.LastUpdated = DateTime.Now;
 
-//            _billboardDbContext.TopTrackLists.Add(topTrackList);
-            user.TopTrackLists.Add(topTrackList);
             _billboardDbContext.SaveChanges();
 
             return user;
@@ -317,25 +332,8 @@ namespace MySpotifyBillboard.Services
                 artists.Add(artist);
             }
 
-            var track = new Track
-            {
-                AlbumId = item.album.id,
-                AlbumName = item.album.name,
-                AlbumOpenInSpotify = item.album.external_urls.spotify,
-                LargeImage = item.album.images[0].url,
-                LastUpdated = DateTime.Now,
-                MediumImage = item.album.images[1].url,
-                Name = item.name,
-                OpenInSpotify = item.external_urls.spotify,
-                Position = i,
-                PreviousPosition = 0,
-                SmallImage = item.album.images[2].url,
-                SpotifyTrackId = item.id,
-                SpotifyURI = item.uri,
-                TopTrackList = topTrackList,
-                TimeAtNumberOne = 0,
-                TimeOnChart = 1
-            };
+            var track = new Track(item.album.name, item.album.id, item.album.external_urls.spotify, item.album.images[0].url, DateTime.Now,
+                item.album.images[1].url, item.name, item.external_urls.spotify, i, 0, item.album.images[2].url, item.id, item.uri, 0, 1, topTrackList);
 
             if (i == 1)
             {
@@ -367,15 +365,11 @@ namespace MySpotifyBillboard.Services
         }
 
 
-        private User UpdateTTL(TopTrackList oldList, User user, RootObject rootObject, TimeFrame timeFrame)
+        private User UpdateTTL(TopTrackList topTrackList, User user, RootObject rootObject, TimeFrame timeFrame)
         {
-            user.TopTrackLists.Remove(oldList);
-
-            var oldTracks = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == oldList.TopTrackListId).ToList();
+            var oldTracks = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == topTrackList.TopTrackListId).ToList();
             var items = rootObject.items;
             var i = 1;
-            var topTrackList = new TopTrackList();
-            topTrackList.Tracks = new List<Track>();
 
             foreach (Item item in items)
             {
@@ -383,56 +377,86 @@ namespace MySpotifyBillboard.Services
 
                 if (existingTrack != null)
                 {
-                    if (i == 1)
-                    {
-                        existingTrack.TimeAtNumberOne++;
-                    }
+                    UpdateExistingTrack(i, existingTrack);
 
-                    if (i != existingTrack.Position)
-                    {
-                        existingTrack.PreviousPosition = existingTrack.Position;
-                        existingTrack.Position = i;
-                    }
-
-                    var timeSinceLastUpdate = DateTime.Now - existingTrack.LastUpdated;
-                    if (timeSinceLastUpdate > TimeSpan.FromDays(1))
-                    {
-                        for (int days = 0; days < timeSinceLastUpdate.Days; days++)
-                        {
-                            existingTrack.TimeOnChart++;
-                        }
-
-                        existingTrack.LastUpdated = DateTime.Now;
-
-                    }
-                    existingTrack.TopTrackList = topTrackList;
-                    
                     i++;
                     _billboardDbContext.SaveChanges();
+
+                    oldTracks.Remove(existingTrack);
                     continue;
                 }
 
                 var artists = new List<Artist>();
-
                 CreateTrackWithArtists(item, artists, i, topTrackList);
-
                 i++;
-
-
-
             }
 
-            _billboardDbContext.TopTrackLists.Remove(oldList);
+            // tracks no longer in chart get position 0, but are not deleted because they may return
+            foreach (Track remainingTrack in oldTracks)
+            {
+                remainingTrack.Position = 0;
+            }
 
-            topTrackList.User = user;
-            topTrackList.TimeFrame = timeFrame;
             topTrackList.LastUpdated = DateTime.Now;
 
-            //            _billboardDbContext.TopTrackLists.Add(topTrackList);
-            user.TopTrackLists.Add(topTrackList);
             _billboardDbContext.SaveChanges();
 
             return user;
+        }
+
+        private static void UpdateExistingTrack(int i, Track existingTrack)
+        {
+            if (i != existingTrack.Position)
+            {
+                existingTrack.PreviousPosition = existingTrack.Position;
+                existingTrack.Position = i;
+            }
+
+            var timeSinceLastUpdate = DateTime.Now - existingTrack.LastUpdated;
+
+            // if its been longer than a day and the existing track was not previously off the chart, update
+            // the time in chart statistic
+            if ((timeSinceLastUpdate > TimeSpan.FromDays(1)) && (existingTrack.PreviousPosition != 0))
+            {
+                for (int days = 0; days < timeSinceLastUpdate.Days; days++)
+                {
+                    existingTrack.TimeOnChart++;
+                    if (i == 1)
+                    {
+                        existingTrack.TimeAtNumberOne++;
+                    }
+                }
+
+                existingTrack.LastUpdated = DateTime.Now;
+            }
+        }
+
+        private List<RecordsDtoTrack> CreateSingleRecordList(IEnumerable<Track> tracks)
+        {
+            var listToReturn = new List<RecordsDtoTrack>();
+
+            foreach (Track track in tracks)
+            {
+                var trackArtists = _billboardDbContext.TrackArtists.ToList().FindAll(ta => ta.TrackId == track.TrackId);
+                var artists = new List<RecordsDtoArtist>();
+
+                foreach (TrackArtist ta in trackArtists)
+                {
+                    var artist = _billboardDbContext.Artists.FirstOrDefault(a => a.ArtistId == ta.ArtistId);
+                    artists.Add(new RecordsDtoArtist
+                    {
+                        Id = artist.SpotifyArtistId,
+                        Name = artist.Name,
+                        OpenInSpotify = artist.OpenInSpotify
+                    });
+                }
+
+                listToReturn.Add(new RecordsDtoTrack(track.AlbumName, track.AlbumId, track.AlbumOpenInSpotify, artists,
+                    track.SpotifyTrackId, track.LargeImage, track.MediumImage, track.Name, track.OpenInSpotify,
+                    track.PreviousPosition, track.SmallImage, track.TimeAtNumberOne, track.TimeOnChart));
+            }
+
+            return listToReturn;
         }
     }
 }

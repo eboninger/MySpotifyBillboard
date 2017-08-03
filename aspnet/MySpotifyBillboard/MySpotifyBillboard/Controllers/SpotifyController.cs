@@ -127,7 +127,7 @@ namespace MySpotifyBillboard.Controllers
         [HttpGet("playlist")]
         public async Task<IActionResult> CreatePlaylistForUser(string spotifyId, string timeFrame)
         {
-            if (string.IsNullOrEmpty(timeFrame))
+            if (string.IsNullOrEmpty(timeFrame) || string.IsNullOrEmpty(spotifyId))
             {
                 return BadRequest();
             }
@@ -175,6 +175,37 @@ namespace MySpotifyBillboard.Controllers
 
             _userRepository.DeleteUser(user);
             return Ok();
+        }
+
+        [HttpGet("records")]
+        public async Task<IActionResult> Records(string spotifyId, string timeFrame)
+        {
+            if (string.IsNullOrEmpty(timeFrame) || string.IsNullOrEmpty(spotifyId))
+            {
+                return BadRequest();
+            }
+
+            var timeFrameObj = AsTimeFrame(timeFrame);
+
+            var user = _userRepository.UserExists(spotifyId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (ExpiredAccessToken(user.ExpirationTime))
+            {
+                user = await _userRepository.Refresh(user);
+            }
+
+            var recordsDto = _userRepository.CreateRecordsDto(user, timeFrameObj);
+
+            if (recordsDto == null)
+            {
+                return BadRequest();
+            }
+            return Ok(recordsDto);
         }
 
 

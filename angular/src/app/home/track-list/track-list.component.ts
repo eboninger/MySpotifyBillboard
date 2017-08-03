@@ -48,7 +48,7 @@ export class TrackListComponent implements OnInit {
         this.tracks = this.serializeTracksService.separate(res.json());
       },
       err => {
-        this.router.navigate(['']);
+        // error message - separate page?
       });
   }
 
