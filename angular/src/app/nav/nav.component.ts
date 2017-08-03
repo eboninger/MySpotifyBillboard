@@ -9,6 +9,7 @@ import { CookieService } from 'ngx-cookie-service'
 })
 export class NavComponent implements OnInit {
   isSignedIn: boolean
+  isCollapsed = false;
 
   constructor(private activatedRoute: ActivatedRoute, private router: Router,
                private cookieService: CookieService) {

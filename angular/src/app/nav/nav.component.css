@@ -9,3 +9,7 @@
 .disabled {
     pointer-events: none;
 }
+
+.navbar-inverse .navbar-right li {
+    text-align: right;
+}

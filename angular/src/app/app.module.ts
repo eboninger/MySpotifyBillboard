@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BusyModule } from 'angular2-busy'
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -49,6 +50,7 @@ import { SingleRecordComponent } from './home/records/single-record/single-recor
     HttpModule,
     BrowserAnimationsModule,
     BusyModule,
+    NgbModule.forRoot(),
     RouterModule.forRoot(appRoutes)
   ],
   providers: [
