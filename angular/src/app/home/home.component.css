@@ -4,3 +4,6 @@
     margin: 80px;
 }
 
+@media (max-width: 1000px) {
+    app-records { display: none; }
+}

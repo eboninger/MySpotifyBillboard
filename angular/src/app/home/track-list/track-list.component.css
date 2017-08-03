@@ -25,14 +25,9 @@ a:active {color:black;}
 }
 
 @media screen and (max-width: 1000px) {
-    .tracklist { padding-top: 250px; }
+    .tracklist { 
+        padding-top: 250px;
+        width: 100%;
+    }
+    
 }
-
-/* .table-inverse {
-    background-color: white;
-    color: black;
-}
-
-.thead-inverse th {
-    color: rgba(230,125,226,0.7);
-} */
