@@ -159,7 +159,7 @@ namespace MySpotifyBillboard.Services
 
         public JObject UpdateUserCharts(User user, string topTrackData, TimeFrame timeFrame)
         {
-            var rootObject = JsonConvert.DeserializeObject<RootObject>(topTrackData);
+            var rootObject = JsonConvert.DeserializeObject<RootObjectTopTracks>(topTrackData);
             var currentTopTrackList =
                 _billboardDbContext.TopTrackLists.FirstOrDefault(
                     ttl => (ttl.User.Id == user.Id) && (ttl.TimeFrame == timeFrame));
@@ -362,7 +362,7 @@ namespace MySpotifyBillboard.Services
         /******************************PRIVATE*HELPER*METHODS****************************************************/
         /********************************************************************************************************/
 
-        private User NewTTL(User user, RootObject rootObject, TimeFrame timeFrame)
+        private User NewTTL(User user, RootObjectTopTracks rootObject, TimeFrame timeFrame)
         {
             var items = rootObject.items;
             var i = 1;
@@ -444,7 +444,7 @@ namespace MySpotifyBillboard.Services
         }
 
 
-        private User UpdateTTL(TopTrackList topTrackList, User user, RootObject rootObject, TimeFrame timeFrame)
+        private User UpdateTTL(TopTrackList topTrackList, User user, RootObjectTopTracks rootObject, TimeFrame timeFrame)
         {
             var oldTracks = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == topTrackList.TopTrackListId).ToList();
             var items = rootObject.items;

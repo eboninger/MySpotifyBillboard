@@ -72,7 +72,7 @@ namespace MySpotifyBillboard.Models.Shared
         public LinkedFrom linked_from { get; set; }
     }
 
-    public class RootObject
+    public class RootObjectTopTracks
     {
         public List<Item> items { get; set; }
         public int total { get; set; }

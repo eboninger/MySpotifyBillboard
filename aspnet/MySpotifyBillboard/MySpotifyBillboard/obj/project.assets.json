@@ -42,6 +42,36 @@
           }
         }
       },
+      "MathNet.Numerics.Core/3.17.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Win32.Primitives": "4.3.0",
+          "System.AppContext": "4.3.0",
+          "System.Collections": "4.3.0",
+          "System.Diagnostics.Debug": "4.3.0",
+          "System.Diagnostics.Tools": "4.3.0",
+          "System.Globalization": "4.3.0",
+          "System.IO.FileSystem": "4.3.0",
+          "System.Linq": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Runtime.InteropServices.RuntimeInformation": "4.3.0",
+          "System.Runtime.Numerics": "4.3.0",
+          "System.Runtime.Serialization.Primitives": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Threading": "4.3.0",
+          "System.Threading.Tasks.Parallel": "4.3.0"
+        },
+        "compile": {
+          "lib/netstandard1.3/MathNet.Numerics.Core.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.3/MathNet.Numerics.Core.dll": {}
+        }
+      },
       "Microsoft.ApplicationInsights/2.2.0": {
         "type": "package",
         "dependencies": {
@@ -3970,6 +4000,19 @@
         "runtimes/win7-arm/native/libuv.dll",
         "runtimes/win7-x64/native/libuv.dll",
         "runtimes/win7-x86/native/libuv.dll"
+      ]
+    },
+    "MathNet.Numerics.Core/3.17.0": {
+      "sha512": "2H9yk9u4e4CVCErlQb20RbUFkTCJSv/4fHJlw04kl+yRMcDYrDYpqaIFdvZImkH+bbzsVGduk1ZVU3vzqH3/Tw==",
+      "type": "package",
+      "path": "mathnet.numerics.core/3.17.0",
+      "files": [
+        "lib/net35/MathNet.Numerics.Core.dll",
+        "lib/net451/MathNet.Numerics.Core.dll",
+        "lib/netstandard1.0/MathNet.Numerics.Core.dll",
+        "lib/netstandard1.3/MathNet.Numerics.Core.dll",
+        "mathnet.numerics.core.3.17.0.nupkg.sha512",
+        "mathnet.numerics.core.nuspec"
       ]
     },
     "Microsoft.ApplicationInsights/2.2.0": {
@@ -10386,6 +10429,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v1.1": [
+      "MathNet.Numerics.Core >= 3.17.0",
       "Microsoft.ApplicationInsights.AspNetCore >= 2.0.0",
       "Microsoft.AspNetCore >= 1.1.2",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 1.1.2",
@@ -10444,6 +10488,10 @@
           "Microsoft.EntityFrameworkCore.Tools": {
             "target": "Package",
             "version": "1.1.1"
+          },
+          "MathNet.Numerics.Core": {
+            "target": "Package",
+            "version": "3.17.0"
           },
           "Microsoft.NETCore.App": {
             "target": "Package",
