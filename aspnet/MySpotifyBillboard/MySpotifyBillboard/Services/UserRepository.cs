@@ -10,6 +10,9 @@ using MySpotifyBillboard.DbContext;
 using MySpotifyBillboard.Helpers;
 using MySpotifyBillboard.Migrations;
 using MySpotifyBillboard.Models;
+using MySpotifyBillboard.Models.ForSpotifyController;
+using MySpotifyBillboard.Models.ForSpotifyController.Dtos;
+using MySpotifyBillboard.Models.Shared;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

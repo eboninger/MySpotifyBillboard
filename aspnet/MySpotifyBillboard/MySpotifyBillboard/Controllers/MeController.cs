@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MySpotifyBillboard.Models
+namespace MySpotifyBillboard.Controllers
 {
-    public enum HttpRequestType
+    public class MeController
     {
-        Get,
-        Post
     }
 }

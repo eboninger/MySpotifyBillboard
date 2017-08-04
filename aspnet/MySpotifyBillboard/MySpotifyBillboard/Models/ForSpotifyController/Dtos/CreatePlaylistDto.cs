@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace MySpotifyBillboard.Models
+﻿namespace MySpotifyBillboard.Models.ForSpotifyController.Dtos
 {
     public class CreatePlaylistDto
     {

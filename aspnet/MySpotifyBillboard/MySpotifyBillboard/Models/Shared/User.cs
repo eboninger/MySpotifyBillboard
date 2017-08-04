@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using MySpotifyBillboard.Models.ForSpotifyController;
 
-namespace MySpotifyBillboard.Models
+namespace MySpotifyBillboard.Models.Shared
 {
     public class User
     {

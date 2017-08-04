@@ -14,6 +14,9 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using MySpotifyBillboard.Helpers;
+using MySpotifyBillboard.Models.ForSpotifyController;
+using MySpotifyBillboard.Models.ForSpotifyController.Dtos;
+using MySpotifyBillboard.Models.Shared;
 using MySpotifyBillboard.Services;
 using Newtonsoft.Json;
 

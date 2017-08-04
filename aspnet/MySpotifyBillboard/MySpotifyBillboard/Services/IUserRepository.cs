@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using MySpotifyBillboard.Models;
-using Newtonsoft.Json;
+﻿using MySpotifyBillboard.Models.ForSpotifyController;
+using MySpotifyBillboard.Models.ForSpotifyController.Dtos;
+using MySpotifyBillboard.Models.Shared;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Threading.Tasks;
 
 namespace MySpotifyBillboard.Services
 {
@@ -46,8 +44,10 @@ namespace MySpotifyBillboard.Services
         // create dto for return chart records in the given time frame to the user
         JObject CreateRecordsDto(User user, TimeFrame timeFrame);
 
+        // create dto for return to front end of ttl belonging to given user in given time frame
         JObject CreateTopTrackListDto(User user, TimeFrame timeFrame);
 
+        // return true if the ttl belonging to the given user in the given time frame has changed with the past twenty hours
         bool TTLHasChangedRecently(User user, TimeFrame timeFrame);
 
     }
