@@ -9,9 +9,10 @@ using MySpotifyBillboard.Models;
 namespace MySpotifyBillboard.Migrations
 {
     [DbContext(typeof(BillboardDbContext))]
-    partial class BillboardDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170804135940_LastChangedColumnForCaching")]
+    partial class LastChangedColumnForCaching
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -137,12 +138,6 @@ namespace MySpotifyBillboard.Migrations
                         .IsRequired();
 
                     b.Property<DateTime>("ExpirationTime");
-
-                    b.Property<string>("LongTrackList")
-                        .HasMaxLength(60000);
-
-                    b.Property<string>("MedTrackList")
-                        .HasMaxLength(60000);
 
                     b.Property<string>("RefreshToken")
                         .IsRequired();

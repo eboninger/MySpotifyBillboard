@@ -2,9 +2,9 @@
     color: rgb(230,125,226);
 }
 
-.navbar-inverse .navbar-nav .nav-link {
+/* .navbar-inverse .navbar-nav .nav-link {
     color: rgba(230,125,226,0.7);
-}
+} */
 
 .disabled {
     pointer-events: none;
@@ -14,6 +14,6 @@
     text-align: right;
 }
 
-.active {
+/* .active {
     color: white;
-}
+} */

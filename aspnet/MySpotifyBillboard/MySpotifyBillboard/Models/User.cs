@@ -15,7 +15,7 @@ namespace MySpotifyBillboard.Models
         public string TokenType { get; set; }
 
         public string DisplayName { get; set; }
-        
+
         [Required]
         public string Scope { get; set; }
 
@@ -32,5 +32,14 @@ namespace MySpotifyBillboard.Models
         public string SpotifyId { get; set; }
 
         public ICollection<TopTrackList> TopTrackLists { get; set; }
+
+        [MaxLength(60000)]
+        public string ShortTrackList { get; set; }
+
+        [MaxLength(60000)]
+        public string MedTrackList { get; set; }
+
+        [MaxLength(60000)]
+        public string LongTrackList { get; set; }
     }
 }

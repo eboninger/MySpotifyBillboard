@@ -47,5 +47,8 @@ namespace MySpotifyBillboard.Services
         JObject CreateRecordsDto(User user, TimeFrame timeFrame);
 
         JObject CreateTopTrackListDto(User user, TimeFrame timeFrame);
+
+        bool TTLHasChangedRecently(User user, TimeFrame timeFrame);
+
     }
 }

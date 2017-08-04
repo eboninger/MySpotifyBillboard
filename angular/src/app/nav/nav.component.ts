@@ -39,18 +39,22 @@ export class NavComponent implements OnInit {
     }
   }
 
-  checkIfActive(timeFrame: string) {
-    let activeTimeFrame = this.activatedRoute.queryParams["timeFrame"];
+  activeStyling(timeFrame: string) {
+    let activeTimeFrame = this.activatedRoute.snapshot.queryParams["timeFrame"];
+
+    if ((activeTimeFrame == null || activeTimeFrame == "") && (timeFrame == "account")) {
+      return {color: 'rgba(240,125,226,0.9)'};
+    }
 
     if (activeTimeFrame == null || activeTimeFrame == "") {
-      return [];
+      return {color: 'rgba(230,125,226,0.7)'};
     }
 
     if (activeTimeFrame == timeFrame) {
-      return ['active'];
+      return {color: 'rgba(240,125,226,0.9)'};
     }
 
-    return [];
+    return {color: 'rgba(230,125,226,0.7)'};
   }
 
 }

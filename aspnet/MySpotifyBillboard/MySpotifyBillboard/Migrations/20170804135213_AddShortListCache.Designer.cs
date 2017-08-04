@@ -9,9 +9,10 @@ using MySpotifyBillboard.Models;
 namespace MySpotifyBillboard.Migrations
 {
     [DbContext(typeof(BillboardDbContext))]
-    partial class BillboardDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170804135213_AddShortListCache")]
+    partial class AddShortListCache
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -40,8 +41,6 @@ namespace MySpotifyBillboard.Migrations
                 {
                     b.Property<int>("TopTrackListId")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("LastChanged");
 
                     b.Property<DateTime>("LastUpdated");
 
@@ -137,12 +136,6 @@ namespace MySpotifyBillboard.Migrations
                         .IsRequired();
 
                     b.Property<DateTime>("ExpirationTime");
-
-                    b.Property<string>("LongTrackList")
-                        .HasMaxLength(60000);
-
-                    b.Property<string>("MedTrackList")
-                        .HasMaxLength(60000);
 
                     b.Property<string>("RefreshToken")
                         .IsRequired();

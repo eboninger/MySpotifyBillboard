@@ -20,5 +20,6 @@ namespace MySpotifyBillboard.Models
 
         public DateTime LastUpdated { get; set; }
 
+        public DateTime LastChanged { get; set; }
     }
 }

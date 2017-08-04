@@ -202,6 +202,22 @@ namespace MySpotifyBillboard.Services
             return (DateTime.Now - currentTopTrackList.LastUpdated) <= TimeSpan.FromHours(1);
         }
 
+        public bool TTLHasChangedRecently(User user, TimeFrame timeFrame)
+        {
+            var currentTopTrackList =
+                _billboardDbContext.TopTrackLists.FirstOrDefault(
+                    ttl => (ttl.User.Id == user.Id) && (ttl.TimeFrame == timeFrame));
+
+            if (currentTopTrackList == null)
+            {
+                return false;
+            }
+
+            return (DateTime.Now - currentTopTrackList.LastChanged) <= TimeSpan.FromHours(20);
+        }
+
+
+
         public JObject CreateRecordsDto(User user, TimeFrame timeFrame)
         {
             var topTrackList = _billboardDbContext.TopTrackLists.FirstOrDefault(ttl => (ttl.TimeFrame == timeFrame) && (ttl.User.Id == user.Id));
@@ -272,8 +288,25 @@ namespace MySpotifyBillboard.Services
                 });
             }
 
+            var serializedJson = JsonConvert.SerializeObject(topTrackListDto);
 
-            return JObject.Parse(JsonConvert.SerializeObject(topTrackListDto));
+            if (timeFrame == TimeFrame.Long)
+            {
+                user.LongTrackList = serializedJson;
+            }
+            else if (timeFrame == TimeFrame.Med)
+            {
+                user.MedTrackList = serializedJson;
+            }
+            else
+            {
+                user.ShortTrackList = serializedJson;
+            }
+
+            _billboardDbContext.SaveChanges();
+
+
+            return JObject.Parse(serializedJson);
         }
 
 
@@ -300,9 +333,11 @@ namespace MySpotifyBillboard.Services
 
             }
 
+
             topTrackList.User = user;
             topTrackList.TimeFrame = timeFrame;
             topTrackList.LastUpdated = DateTime.Now;
+            topTrackList.LastChanged = DateTime.Now;
 
             _billboardDbContext.SaveChanges();
 
@@ -370,6 +405,7 @@ namespace MySpotifyBillboard.Services
             var oldTracks = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == topTrackList.TopTrackListId).ToList();
             var items = rootObject.items;
             var i = 1;
+            bool changed = false;
 
             foreach (Item item in items)
             {
@@ -377,7 +413,7 @@ namespace MySpotifyBillboard.Services
 
                 if (existingTrack != null)
                 {
-                    UpdateExistingTrack(i, existingTrack);
+                    changed = UpdateExistingTrack(i, existingTrack) || changed;
 
                     i++;
                     _billboardDbContext.SaveChanges();
@@ -399,17 +435,25 @@ namespace MySpotifyBillboard.Services
 
             topTrackList.LastUpdated = DateTime.Now;
 
+            if (changed)
+            {
+                topTrackList.LastChanged = DateTime.Now;
+            }
+
             _billboardDbContext.SaveChanges();
 
             return user;
         }
 
-        private static void UpdateExistingTrack(int i, Track existingTrack)
+        private static bool UpdateExistingTrack(int i, Track existingTrack)
         {
+            bool changed = false;
+
             if (i != existingTrack.Position)
             {
                 existingTrack.PreviousPosition = existingTrack.Position;
                 existingTrack.Position = i;
+                changed = true;
             }
 
             var timeSinceLastUpdate = DateTime.Now - existingTrack.LastUpdated;
@@ -429,6 +473,8 @@ namespace MySpotifyBillboard.Services
 
                 existingTrack.LastUpdated = DateTime.Now;
             }
+
+            return changed;
         }
 
         private List<RecordsDtoTrack> CreateSingleRecordList(IEnumerable<Track> tracks)

@@ -113,6 +113,21 @@ namespace MySpotifyBillboard.Controllers
                 user = await _userRepository.Refresh(user);
             }
 
+            // if it unlikely the spotify api results have changed, check for a cached Dto. if it exists,
+            // return it, otherwise send a new request to the api and cache that dto
+            if (_userRepository.TTLHasChangedRecently(user, timeFrameObj))
+            {
+                switch (timeFrameObj)
+                {
+                    case TimeFrame.Long:
+                        return user.LongTrackList != null ? Ok(JObject.Parse(user.LongTrackList)) : await MakeTopTracksRequest(timeFrame, user, timeFrameQueryString);
+                    case TimeFrame.Med:
+                        return user.MedTrackList != null ? Ok(JObject.Parse(user.MedTrackList)) : await MakeTopTracksRequest(timeFrame, user, timeFrameQueryString);
+                    default:
+                        return user.ShortTrackList != null ? Ok(JObject.Parse(user.ShortTrackList)): await MakeTopTracksRequest(timeFrame, user, timeFrameQueryString);
+                }
+            }
+
             if (_userRepository.TTLHasBeenUpdatedRecently(user, timeFrameObj))
             {
                 return Ok(_userRepository.CreateTopTrackListDto(user, timeFrameObj));
