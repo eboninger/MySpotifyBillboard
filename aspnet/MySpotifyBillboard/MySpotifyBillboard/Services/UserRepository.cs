@@ -15,6 +15,7 @@ using MySpotifyBillboard.Models.ForSpotifyController.Dtos;
 using MySpotifyBillboard.Models.Shared;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Optional;
 
 namespace MySpotifyBillboard.Services
 {
@@ -181,7 +182,7 @@ namespace MySpotifyBillboard.Services
             var topTrackList =
                 _billboardDbContext.TopTrackLists.FirstOrDefault(
                     ttl => ttl.User.Id == user.Id && ttl.TimeFrame == timeFrame);
-            var tracks = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == topTrackList.TopTrackListId).OrderBy(t => t.Position).ToList();
+            var tracks = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == topTrackList.TopTrackListId && t.Position != 0).OrderBy(t => t.Position).ToList();
 
             foreach (Track track in tracks)
             {
@@ -219,6 +220,37 @@ namespace MySpotifyBillboard.Services
             return (DateTime.Now - currentTopTrackList.LastChanged) <= TimeSpan.FromHours(20);
         }
 
+        public async Task<Option<User>> CanContinueWithRequest(Dictionary<string, string> args)
+        {
+            foreach (KeyValuePair<string, string> arg in args)
+            {
+                if (string.IsNullOrEmpty(arg.Value))
+                {
+                    return Option.None<User>();
+                }
+            }
+
+            var user = UserExists(args["spotifyId"]);
+
+            // if user does not exist, return not found
+            if (user == null)
+            {
+                return Option.None<User>();
+            }
+
+            // if user's session with the spotify API has expired, refresh that user's access token
+            if (ExpiredAccessToken(user))
+            {
+                user = await Refresh(user);
+            }
+
+            return Option.Some(user);
+        }
+
+        public bool ExpiredAccessToken(User user)
+        {
+            return DateTime.Now > user.ExpirationTime;
+        }
 
 
         public JObject CreateRecordsDto(User user, TimeFrame timeFrame)

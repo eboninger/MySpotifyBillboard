@@ -1,24 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using msb.Helpers;
-using MySpotifyBillboard.DbContext;
-using MySpotifyBillboard.Models;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading.Tasks;
 using MySpotifyBillboard.Helpers;
 using MySpotifyBillboard.Models.ForSpotifyController;
 using MySpotifyBillboard.Models.ForSpotifyController.Dtos;
 using MySpotifyBillboard.Models.Shared;
 using MySpotifyBillboard.Services;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace MySpotifyBillboard.Controllers
 {
@@ -93,28 +89,24 @@ namespace MySpotifyBillboard.Controllers
         [HttpGet("top_tracks")]
         public async Task<IActionResult> TopTracks([FromQuery] string spotifyId, string timeFrame)
         {
-            var timeFrameQueryString = GetTimeFrameQueryString(timeFrame);
-            var timeFrameObj = AsTimeFrame(timeFrame);
+            var user = (await _userRepository.CanContinueWithRequest(new Dictionary<string, string>
+            {
+                {"spotifyId", spotifyId},
+                {"timeFrame", timeFrame}
+            }))
+            .Match(
+                some: u => u,
+                none: () => null
+            );
 
-            // if query strings are not complete or do not conform to standards, return BadRequest
-            if (string.IsNullOrEmpty(spotifyId) || string.IsNullOrEmpty(timeFrameQueryString))
+            if (user == null)
             {
                 return BadRequest();
             }
 
-            var user = _userRepository.UserExists(spotifyId);
 
-            // if user does not exist, return not found
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            // if user's session with the spotify API has expired, refresh that user's access token
-            if (ExpiredAccessToken(user.ExpirationTime))
-            {
-                user = await _userRepository.Refresh(user);
-            }
+            var timeFrameQueryString = GetTimeFrameQueryString(timeFrame);
+            var timeFrameObj = AsTimeFrame(timeFrame);
 
             // if it unlikely the spotify api results have changed, check for a cached Dto. if it exists,
             // return it, otherwise send a new request to the api and cache that dto
@@ -145,24 +137,23 @@ namespace MySpotifyBillboard.Controllers
         [HttpGet("playlist")]
         public async Task<IActionResult> CreatePlaylistForUser(string spotifyId, string timeFrame)
         {
-            if (string.IsNullOrEmpty(timeFrame) || string.IsNullOrEmpty(spotifyId))
+            var user = (await _userRepository.CanContinueWithRequest(new Dictionary<string, string>
+                {
+                    {"spotifyId", spotifyId},
+                    {"timeFrame", timeFrame}
+                }))
+                .Match(
+                    some: u => u,
+                    none: () => null
+                );
+
+            if (user == null)
             {
                 return BadRequest();
             }
 
             var timeFrameObj = AsTimeFrame(timeFrame);
 
-            var user = _userRepository.UserExists(spotifyId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            if (ExpiredAccessToken(user.ExpirationTime))
-            {
-                user = await _userRepository.Refresh(user);
-            }
 
             // format the name for the playist to be created (i.e. "Four Week Top Tracks (07/31/2017 16:42:40)" )
             CreatePlaylistDto requestContentDto = new CreatePlaylistDto
@@ -198,24 +189,22 @@ namespace MySpotifyBillboard.Controllers
         [HttpGet("records")]
         public async Task<IActionResult> Records(string spotifyId, string timeFrame)
         {
-            if (string.IsNullOrEmpty(timeFrame) || string.IsNullOrEmpty(spotifyId))
+            var user = (await _userRepository.CanContinueWithRequest(new Dictionary<string, string>
+                {
+                    {"spotifyId", spotifyId},
+                    {"timeFrame", timeFrame}
+                }))
+                .Match(
+                    some: u => u,
+                    none: () => null
+                );
+
+            if (user == null)
             {
                 return BadRequest();
             }
 
             var timeFrameObj = AsTimeFrame(timeFrame);
-
-            var user = _userRepository.UserExists(spotifyId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            if (ExpiredAccessToken(user.ExpirationTime))
-            {
-                user = await _userRepository.Refresh(user);
-            }
 
             var recordsDto = _userRepository.CreateRecordsDto(user, timeFrameObj);
 
@@ -245,11 +234,6 @@ namespace MySpotifyBillboard.Controllers
                 new KeyValuePair<string, string>("client_secret", Constants.CLIENT_SECRET)
             };
             return postData;
-        }
-
-        private static bool ExpiredAccessToken(DateTime expirationTime)
-        {
-            return DateTime.Now > expirationTime;
         }
 
         // changes time frame from query string at home to query string needed from spotify API. returns null

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MySpotifyBillboard.Models.Shared;
 
 namespace MySpotifyBillboard.Models.ForSpotifyController
 {

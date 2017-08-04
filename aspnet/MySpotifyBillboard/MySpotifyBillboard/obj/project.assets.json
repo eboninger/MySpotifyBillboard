@@ -1744,6 +1744,18 @@
           "lib/netstandard1.0/Newtonsoft.Json.dll": {}
         }
       },
+      "Optional/3.2.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Collections": "4.0.11"
+        },
+        "compile": {
+          "lib/netstandard1.0/Optional.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.0/Optional.dll": {}
+        }
+      },
       "Remotion.Linq/2.1.1": {
         "type": "package",
         "dependencies": {
@@ -5417,6 +5429,33 @@
         "newtonsoft.json.9.0.1.nupkg.sha512",
         "newtonsoft.json.nuspec",
         "tools/install.ps1"
+      ]
+    },
+    "Optional/3.2.0": {
+      "sha512": "6SNY7MRAnOeb6I2JePjK9tDaXlBHj0TiR057D/8jxOJQBvWs6fvyv23dAk9lNUv/PUFFg48W46GVgsneuhK3/A==",
+      "type": "package",
+      "path": "optional/3.2.0",
+      "files": [
+        "lib/net35/Optional.dll",
+        "lib/net35/Optional.xml",
+        "lib/net40/Optional.dll",
+        "lib/net40/Optional.xml",
+        "lib/net45/Optional.dll",
+        "lib/net45/Optional.xml",
+        "lib/net451/Optional.dll",
+        "lib/net451/Optional.xml",
+        "lib/net452/Optional.dll",
+        "lib/net452/Optional.xml",
+        "lib/net46/Optional.dll",
+        "lib/net46/Optional.xml",
+        "lib/net461/Optional.dll",
+        "lib/net461/Optional.xml",
+        "lib/net462/Optional.dll",
+        "lib/net462/Optional.xml",
+        "lib/netstandard1.0/Optional.dll",
+        "lib/netstandard1.0/Optional.xml",
+        "optional.3.2.0.nupkg.sha512",
+        "optional.nuspec"
       ]
     },
     "Remotion.Linq/2.1.1": {
@@ -10355,7 +10394,8 @@
       "Microsoft.EntityFrameworkCore.SqlServer >= 1.1.2",
       "Microsoft.EntityFrameworkCore.Tools >= 1.1.1",
       "Microsoft.Extensions.Logging.Debug >= 1.1.2",
-      "Microsoft.NETCore.App >= 1.1.2"
+      "Microsoft.NETCore.App >= 1.1.2",
+      "Optional >= 3.2.0"
     ]
   },
   "packageFolders": {
@@ -10396,6 +10436,10 @@
           "Microsoft.Extensions.Logging.Debug": {
             "target": "Package",
             "version": "1.1.2"
+          },
+          "Optional": {
+            "target": "Package",
+            "version": "3.2.0"
           },
           "Microsoft.EntityFrameworkCore.Tools": {
             "target": "Package",

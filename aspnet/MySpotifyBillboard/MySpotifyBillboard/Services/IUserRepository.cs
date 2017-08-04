@@ -3,7 +3,9 @@ using MySpotifyBillboard.Models.ForSpotifyController.Dtos;
 using MySpotifyBillboard.Models.Shared;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Optional;
 
 namespace MySpotifyBillboard.Services
 {
@@ -49,6 +51,13 @@ namespace MySpotifyBillboard.Services
 
         // return true if the ttl belonging to the given user in the given time frame has changed with the past twenty hours
         bool TTLHasChangedRecently(User user, TimeFrame timeFrame);
+
+        // confirm user exists, and if the user's access token is expired refresh it.  also confirm all args
+        // are non-null and have legitimate content
+        Task<Option<User>> CanContinueWithRequest(Dictionary<string, string> args);
+
+        // return true if the access token has expired, false otherwise
+        bool ExpiredAccessToken(User user);
 
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MySpotifyBillboard.Models.ForSpotifyController
+namespace MySpotifyBillboard.Models.Shared
 {
     public class ExternalUrls
     {
