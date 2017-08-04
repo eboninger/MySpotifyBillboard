@@ -17,16 +17,16 @@ namespace MySpotifyBillboard.Services
 
         // add user to our app database with the given dto. returns null if the action fails, otherwise
         // returns the new user
-        Task<User> AddNewUser(SpotifyConnectionDataDto spotifyConnectionData);
+        Task<Option<User>> AddNewUser(SpotifyConnectionDataDto spotifyConnectionData);
 
         // query spotify API to get more info about the user represented in the given dto
-        Task<JObject> GetUserInfo(SpotifyConnectionDataDto spotifyConnectionData);
+        Task<Option<JObject>> GetUserInfo(SpotifyConnectionDataDto spotifyConnectionData);
 
         // update user row in user table with the given info after refresh request is made to the spotify API
         Task<User> UpdateUserAfterRefresh(User user, string accessToken, DateTime expirationTime, string scope, string tokenType);
 
         // call the spotify API to refresh the given user, then update database
-        Task<User> Refresh(User user);
+        Task<Option<User>> Refresh(User user);
 
         // deletes the given user from the database
         void DeleteUser(User user);
@@ -44,7 +44,7 @@ namespace MySpotifyBillboard.Services
         bool TTLHasBeenUpdatedRecently(User user, TimeFrame timeFrame);
 
         // create dto for return chart records in the given time frame to the user
-        JObject CreateRecordsDto(User user, TimeFrame timeFrame);
+        Option<JObject> CreateRecordsDto(User user, TimeFrame timeFrame);
 
         // create dto for return to front end of ttl belonging to given user in given time frame
         JObject CreateTopTrackListDto(User user, TimeFrame timeFrame);

@@ -33,19 +33,23 @@ namespace MySpotifyBillboard.Services
             return _billboardDbContext.Users.FirstOrDefault(u => u.SpotifyId == spotifyId);
         }
 
-        public async Task<User> AddNewUser(SpotifyConnectionDataDto spotifyConnectionData)
+        public async Task<Option<User>> AddNewUser(SpotifyConnectionDataDto spotifyConnectionData)
         {
-            var jsonResponse = await GetUserInfo(spotifyConnectionData);
+            var jsonResponse = (await GetUserInfo(spotifyConnectionData))
+                .Match(
+                    some: jr => jr,
+                    none: null
+                );
 
             if (jsonResponse == null)
             {
-                return null;
+                return Option.None<User>();
             }
 
             if (string.IsNullOrEmpty((string)jsonResponse["display_name"]) || string.IsNullOrEmpty((string)jsonResponse["email"]) ||
                                                                                 string.IsNullOrEmpty((string)jsonResponse["id"]))
             {
-                return null;
+                return Option.None<User>();
             }
 
             var newUser = new User
@@ -63,11 +67,10 @@ namespace MySpotifyBillboard.Services
             await _billboardDbContext.AddAsync(newUser);
             await _billboardDbContext.SaveChangesAsync();
 
-            return newUser;
+            return Option.Some(newUser);
         }
 
-        // CONTRACT: will return null if the request fails, otherwise returns a JObject with the user information
-        public async Task<JObject> GetUserInfo(SpotifyConnectionDataDto spotifyConnectionData)
+        public async Task<Option<JObject>> GetUserInfo(SpotifyConnectionDataDto spotifyConnectionData)
         {
             using (var client = new HttpClient())
             {
@@ -79,11 +82,11 @@ namespace MySpotifyBillboard.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return JObject.Parse(await response.Content.ReadAsStringAsync());
+                    return Option.Some(JObject.Parse(await response.Content.ReadAsStringAsync()));
                 }
             }
 
-            return null;
+            return Option.None<JObject>();
         }
 
         public async Task<User> UpdateUserAfterRefresh(User user, string accessToken, DateTime expirationTime, string scope, string tokenType)
@@ -97,7 +100,7 @@ namespace MySpotifyBillboard.Services
             return user;
         }
 
-        public async Task<User> Refresh(User user)
+        public async Task<Option<User>> Refresh(User user)
         {
             using (var client = new HttpClient())
             {
@@ -125,13 +128,13 @@ namespace MySpotifyBillboard.Services
                     if (spotifyRefreshData.access_token == null)
                     {
                         DeleteUser(user);
-                        return null;
+                        return Option.None<User>();
                     }
 
-                    return await UpdateUserAfterRefresh(user, spotifyRefreshData.access_token,
+                    return Option.Some(await UpdateUserAfterRefresh(user, spotifyRefreshData.access_token,
                         DateTime.Now.Add(TimeSpan.FromSeconds(spotifyRefreshData.expires_in)),
                         spotifyRefreshData.scope,
-                        spotifyRefreshData.token_type);
+                        spotifyRefreshData.token_type));
                 }
             }
         }
@@ -241,8 +244,18 @@ namespace MySpotifyBillboard.Services
             // if user's session with the spotify API has expired, refresh that user's access token
             if (ExpiredAccessToken(user))
             {
-                user = await Refresh(user);
+                user = (await Refresh(user))
+                    .Match(
+                        some: u => u,
+                        none: () => null
+                    );
+
+                if (user == null)
+                {
+                    return Option.None<User>();
+                }
             }
+
 
             return Option.Some(user);
         }
@@ -253,13 +266,13 @@ namespace MySpotifyBillboard.Services
         }
 
 
-        public JObject CreateRecordsDto(User user, TimeFrame timeFrame)
+        public Option<JObject> CreateRecordsDto(User user, TimeFrame timeFrame)
         {
             var topTrackList = _billboardDbContext.TopTrackLists.FirstOrDefault(ttl => (ttl.TimeFrame == timeFrame) && (ttl.User.Id == user.Id));
 
             if (topTrackList == null)
             {
-                return null;
+                return Option.None<JObject>();
             }
 
             var tracks = _billboardDbContext.Tracks.Where(t => t.TopTrackList.TopTrackListId == topTrackList.TopTrackListId).ToList();
@@ -275,7 +288,7 @@ namespace MySpotifyBillboard.Services
                 LongestTimeInChartCons = null
             };
 
-            return JObject.Parse(JsonConvert.SerializeObject(recordsDto));
+            return Option.Some(JObject.Parse(JsonConvert.SerializeObject(recordsDto)));
         }
 
         public JObject CreateTopTrackListDto(User user, TimeFrame timeFrame)

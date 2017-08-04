@@ -57,14 +57,27 @@ namespace MySpotifyBillboard.Controllers
                             throw new Exception("Bad initial request for access token");
                         }
 
-                        var jsonResponse = await _userRepository.GetUserInfo(spotifyConnectionData);
+                        var jsonResponse = (await _userRepository.GetUserInfo(spotifyConnectionData))
+                            .Match(
+                                some: jr => jr,
+                                none: () => null
+                            );
+
+                        if (jsonResponse == null)
+                        {
+                            throw new Exception("Failure to retrieve user info from spotify api");
+                        }
 
                         // if the user is not in our database, create a new user for the app, otherwise,
                         // return the existing user
                         var existingUser = _userRepository.UserExists((string)jsonResponse["id"]);
                         if (existingUser == null)
                         {
-                            var newUser = await _userRepository.AddNewUser(spotifyConnectionData);
+                            var newUser = (await _userRepository.AddNewUser(spotifyConnectionData))
+                                .Match(
+                                    some: nu => nu,
+                                    none: () => null
+                                );
 
                             if (newUser != null)
                             {
@@ -119,7 +132,7 @@ namespace MySpotifyBillboard.Controllers
                     case TimeFrame.Med:
                         return user.MedTrackList != null ? Ok(JObject.Parse(user.MedTrackList)) : await MakeTopTracksRequest(timeFrame, user, timeFrameQueryString);
                     default:
-                        return user.ShortTrackList != null ? Ok(JObject.Parse(user.ShortTrackList)): await MakeTopTracksRequest(timeFrame, user, timeFrameQueryString);
+                        return user.ShortTrackList != null ? Ok(JObject.Parse(user.ShortTrackList)) : await MakeTopTracksRequest(timeFrame, user, timeFrameQueryString);
                 }
             }
 
@@ -206,7 +219,11 @@ namespace MySpotifyBillboard.Controllers
 
             var timeFrameObj = AsTimeFrame(timeFrame);
 
-            var recordsDto = _userRepository.CreateRecordsDto(user, timeFrameObj);
+            var recordsDto = _userRepository.CreateRecordsDto(user, timeFrameObj)
+                .Match(
+                    some: rdto => rdto,
+                    none: () => null
+                );
 
             if (recordsDto == null)
             {

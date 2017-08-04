@@ -1,18 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using msb.Helpers;
-using MySpotifyBillboard.Helpers;
-using MySpotifyBillboard.Models.ForSpotifyController;
-using MySpotifyBillboard.Models.ForSpotifyController.Dtos;
-using MySpotifyBillboard.Models.Shared;
 using MySpotifyBillboard.Services;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MySpotifyBillboard.Controllers
@@ -39,10 +27,14 @@ namespace MySpotifyBillboard.Controllers
 
         private async Task<bool> MakeAllRequests(string spotifyId)
         {
-            var user = await _userRepository.CanContinueWithRequest(new Dictionary<string, string>
+            var user = (await _userRepository.CanContinueWithRequest(new Dictionary<string, string>
             {
                 {"spotifyId", spotifyId},
-            });
+            }))
+            .Match(
+                some: u => u,
+                none: () => null
+            );
 
             if (user == null)
             {
