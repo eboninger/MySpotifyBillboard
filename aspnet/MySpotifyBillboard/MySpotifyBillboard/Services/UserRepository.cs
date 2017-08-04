@@ -328,11 +328,7 @@ namespace MySpotifyBillboard.Services
                 CreateTrackWithArtists(item, artists, i, topTrackList);
 
                 i++;
-
-
-
             }
-
 
             topTrackList.User = user;
             topTrackList.TimeFrame = timeFrame;
