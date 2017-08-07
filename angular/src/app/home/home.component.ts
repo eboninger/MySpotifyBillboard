@@ -14,12 +14,7 @@ import { KeyService } from './../key.service'
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  constructor(private activatedRoute: ActivatedRoute,
-     private serializeTracksService: SerializeTracksService,
-    private router: Router, private cookieService: CookieService,
-    private keyService: KeyService, private http: Http) {
-    
-  }
+  constructor(private router: Router, private cookieService: CookieService) { }
 
   async ngOnInit() {
     if (this.cookieService.get("spotifyId") == null || this.cookieService.get("spotifyId") == "") {

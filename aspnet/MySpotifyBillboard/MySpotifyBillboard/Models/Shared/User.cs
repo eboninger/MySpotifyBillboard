@@ -14,8 +14,6 @@ namespace MySpotifyBillboard.Models.Shared
 
         public string TokenType { get; set; }
 
-        public string DisplayName { get; set; }
-
         [Required]
         public string Scope { get; set; }
 
@@ -24,9 +22,6 @@ namespace MySpotifyBillboard.Models.Shared
 
         [Required]
         public string RefreshToken { get; set; }
-
-        [Required]
-        public string Email { get; set; }
 
         [Required]
         public string SpotifyId { get; set; }

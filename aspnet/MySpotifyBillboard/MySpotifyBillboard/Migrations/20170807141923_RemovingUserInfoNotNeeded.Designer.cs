@@ -9,9 +9,10 @@ using MySpotifyBillboard.Models.ForSpotifyController;
 namespace MySpotifyBillboard.Migrations
 {
     [DbContext(typeof(BillboardDbContext))]
-    partial class BillboardDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170807141923_RemovingUserInfoNotNeeded")]
+    partial class RemovingUserInfoNotNeeded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")

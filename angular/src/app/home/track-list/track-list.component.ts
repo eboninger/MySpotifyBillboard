@@ -1,11 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Track } from './../track.model'
-import { fadeInAnimation } from './track-list.animations'
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router'
-import { Http, URLSearchParams } from '@angular/http'
-import { KeyService } from '../../key.service'
 import { SerializeTracksService } from '../serialize-tracks.service'
 import { CookieService } from 'ngx-cookie-service'
+import { TopTracksService } from './top-tracks.service'
 
 import { Subscription } from 'rxjs'
 
@@ -20,26 +18,22 @@ export class TrackListComponent implements OnInit {
   busy: Subscription
   tracks: Track[]
 
-  constructor(private activatedRoute: ActivatedRoute, private http: Http,
-    private keyService: KeyService, private serializeTracksService: SerializeTracksService,
-    private router: Router, private cookieService: CookieService) {
+  constructor(private activatedRoute: ActivatedRoute, private serializeTracksService: SerializeTracksService,
+    private router: Router, private cookieService: CookieService, private topTracksService: TopTracksService) {
 
     router.events.subscribe((event) => {
       if ((event instanceof NavigationEnd) && (this.cookieService.get("spotifyId") != null)) {
-        this.getTopTracks();
-      }
-    })
-  }
+        this.getTracksFromService();
+      }})
+    }
+      
 
   async ngOnInit() {
-    await this.getTopTracks();
+    this.getTracksFromService();
   }
 
-  async getTopTracks() {
-    let params = new URLSearchParams();
-    params.set('spotifyId', this.cookieService.get("spotifyId"));
-    params.set('timeFrame', this.activatedRoute.snapshot.queryParams["timeFrame"])
-    this.busy = await this.http.get(this.keyService.getSingleKey('API-URL') + 'spotify/top_tracks', { search: params })
+  async getTracksFromService() {
+    this.busy = await this.topTracksService.getTopTracks(this.cookieService.get("spotifyId"), this.activatedRoute.snapshot.queryParams["timeFrame"])
       .subscribe(
       res => {
         if (res == null) {
@@ -51,5 +45,6 @@ export class TrackListComponent implements OnInit {
         // error message - separate page?
       });
   }
+
 
 }

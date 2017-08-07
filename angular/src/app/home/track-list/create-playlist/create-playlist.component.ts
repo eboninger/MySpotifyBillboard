@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { KeyService } from '../../../key.service'
 import { CookieService } from 'ngx-cookie-service'
-import { Http, URLSearchParams } from '@angular/http'
 import { ActivatedRoute } from '@angular/router'
+import { CreatePlaylistService } from './create-playlist.service'
 
 @Component({
   selector: 'app-create-playlist',
@@ -14,17 +13,13 @@ export class CreatePlaylistComponent implements OnInit {
   buttonText: string = "Export Playlist To Spotify"
 
   constructor(private activatedRoute: ActivatedRoute, 
-    private cookieService: CookieService, private keyService: KeyService,
-    private http: Http) { }
+    private cookieService: CookieService, private createPlaylistService: CreatePlaylistService) { }
 
   ngOnInit() {
   }
 
-  export() {
-    let params = new URLSearchParams();
-    params.set('spotifyId', this.cookieService.get("spotifyId"));
-    params.set('timeFrame', this.activatedRoute.snapshot.queryParams["timeFrame"])
-    this.http.get(this.keyService.getSingleKey('API-URL') + 'spotify/playlist', { search: params })
+  async export() {
+    await this.createPlaylistService.createPlaylist(this.cookieService.get("spotifyId"), this.activatedRoute.snapshot.queryParams["timeFrame"])
       .subscribe(res => {
         if (res == null) {
           return;

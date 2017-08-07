@@ -55,8 +55,6 @@ namespace MySpotifyBillboard.Services
             var newUser = new User
             {
                 AccessToken = spotifyConnectionData.access_token,
-                DisplayName = (string)jsonResponse["display_name"],
-                Email = (string)jsonResponse["email"],
                 ExpirationTime = DateTime.Now.Add(TimeSpan.FromSeconds(spotifyConnectionData.expires_in)),
                 RefreshToken = spotifyConnectionData.refresh_token,
                 Scope = spotifyConnectionData.scope,
