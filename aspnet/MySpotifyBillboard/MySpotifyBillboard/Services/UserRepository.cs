@@ -493,6 +493,11 @@ namespace MySpotifyBillboard.Services
         {
             bool changed = false;
 
+            if (existingTrack.Position == 0)
+            {
+                existingTrack.LastUpdated = DateTime.Now;
+            }
+
             if (i != existingTrack.Position)
             {
                 existingTrack.PreviousPosition = existingTrack.Position;
@@ -504,7 +509,7 @@ namespace MySpotifyBillboard.Services
 
             // if its been longer than a day and the existing track was not previously off the chart, update
             // the time in chart statistic
-            if ((timeSinceLastUpdate > TimeSpan.FromDays(1)) && (existingTrack.PreviousPosition != 0))
+            if (timeSinceLastUpdate > TimeSpan.FromDays(1))
             {
                 for (int days = 0; days < timeSinceLastUpdate.Days; days++)
                 {

@@ -30,13 +30,13 @@
           <td *ngIf="(((track.TimeOnChart/7) | roundTwoDec) != 1) && (((track.TimeOnChart/7) | roundTwoDec) != 0)">{{track.TimeOnChart/7 | roundTwoDec}} weeks</td>
           <td *ngIf="((track.TimeOnChart/7) | roundTwoDec) == 1">1 week</td>
           <td *ngIf="((track.TimeOnChart/7) | roundTwoDec) == 0">&lt; 1 week</td>
-          <td *ngIf="track.PreviousPosition != 0">
+          <td *ngIf="track.PreviousPosition != 0 && track.PreviousPosition != -1">
             {{track.PreviousPosition}}
             <img class="pos-img" *ngIf="track.PreviousPosition < (i + 1)" src="../../../assets/static/img/down-arrow.png" />
             <img class="pos-img" *ngIf="track.PreviousPosition > (i + 1)" src="../../../assets/static/img/up-arrow.png" />
           </td>
           <!-- empty column to fill the space for highlighting -->
-          <td *ngIf="track.PreviousPosition == 0"></td> 
+          <td *ngIf="track.PreviousPosition == 0 || track.PreviousPosition == -1"></td> 
       </tr>
     </tbody>
   </table>

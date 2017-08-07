@@ -88,7 +88,7 @@ namespace MySpotifyBillboard.Controllers
             var popularities = combinedList.Select(i => i.popularity).ToList();
             var highestPop = popularities.Max();
             var minPop = popularities.Min();
-            var standardDev = Statistics.StandardDeviation(combinedList.Select(i => i.popularity * 1.0));
+            var standardDev = combinedList.Select(i => i.popularity * 1.0).StandardDeviation();
 
             Debug.WriteLine("AVERAGE POPULARITY: " + totalPopularity/150.0);
             Debug.WriteLine("Lowest Popularity: " + minPop);
