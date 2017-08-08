@@ -24,12 +24,14 @@ export class DeauthorizeComponent implements OnInit {
     if (spotifyId == "" || spotifyId == null) { return; }
     
     this.deauthorizeUserService.deauthorizeUser(spotifyId);
+    this.cookieService.deleteAll();
     this.clearDataText = "Done!"
+    this.router.navigate(['']);
   }
 
   clearCookies() {
     this.cookieService.deleteAll();
-    let spotifyId = this.cookieService.get("spotifyId")
+    console.log(this.cookieService.get("spotifyId"))
     this.router.navigate(['']);
   }
 

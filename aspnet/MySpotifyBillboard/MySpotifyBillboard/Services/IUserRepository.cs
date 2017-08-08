@@ -20,7 +20,7 @@ namespace MySpotifyBillboard.Services
         Task<Option<User>> AddNewUser(SpotifyConnectionDataDto spotifyConnectionData);
 
         // query spotify API to get more info about the user represented in the given dto
-        Task<Option<JObject>> GetUserInfo(SpotifyConnectionDataDto spotifyConnectionData);
+        Task<JObject> GetUserInfo(SpotifyConnectionDataDto spotifyConnectionData);
 
         // update user row in user table with the given info after refresh request is made to the spotify API
         Task<User> UpdateUserAfterRefresh(User user, string accessToken, DateTime expirationTime, string scope, string tokenType);

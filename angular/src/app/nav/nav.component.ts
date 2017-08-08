@@ -49,22 +49,4 @@ export class NavComponent implements OnInit {
     }
   }
 
-  // activeStyling(timeFrame: string) {
-  //   console.log(this.activatedRoute.params)
-  //   console.log(this.activeTimeFrame)
-  //   if ((this.activeTimeFrame == null || this.activeTimeFrame == "") && (timeFrame == "account")) {
-  //     return {color: 'rgba(240,125,226,0.9)'};
-  //   }
-
-  //   if (this.activeTimeFrame == null || this.activeTimeFrame == "") {
-  //     return {color: 'rgba(230,125,226,0.7)'};
-  //   }
-
-  //   if (this.activeTimeFrame == timeFrame) {
-  //     return {color: 'rgba(240,125,226,0.9)'};
-  //   }
-
-  //   return {color: 'rgba(230,125,226,0.7)'};
-  // }
-
 }

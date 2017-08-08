@@ -25,11 +25,10 @@ export class FinishAuthComponent implements OnInit {
                   code: code, scope: this.keyService.getSingleKey("Scope")}
 
     var response = this.http.post(this.keyService.getSingleKey('API-URL') + 'list/token', body)
-      // .map(res => res.json())
       .subscribe(
       data => {
-        this.cookieService.set('spotifyId', data["value"]["spotifyId"]);
-        this.router.navigate(['list', data["value"]["spotifyId"], 'long'] )
+        this.cookieService.set('spotifyId', data['value']['SpotifyId']);
+        this.router.navigate(['list', data['value']['SpotifyId'], 'long'] )
       },
       err => {
         this.cookieService.deleteAll();

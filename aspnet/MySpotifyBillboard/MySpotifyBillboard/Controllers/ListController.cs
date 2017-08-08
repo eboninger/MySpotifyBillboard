@@ -60,11 +60,7 @@ namespace MySpotifyBillboard.Controllers
                             throw new Exception("Bad initial request for access token");
                         }
 
-                        var jsonResponse = (await _userRepository.GetUserInfo(spotifyConnectionData))
-                            .Match(
-                                some: jr => jr,
-                                none: () => null
-                            );
+                        var jsonResponse = await _userRepository.GetUserInfo(spotifyConnectionData);
 
                         if (jsonResponse == null)
                         {
@@ -84,7 +80,8 @@ namespace MySpotifyBillboard.Controllers
 
                             if (newUser != null)
                             {
-                                return Ok(Json(newUser));
+                                var innerUserDto = new UserDto { SpotifyId = newUser.SpotifyId };
+                                return Ok(Json(JObject.Parse(JsonConvert.SerializeObject(innerUserDto))));
                             }
                             return BadRequest();
                         }
@@ -93,8 +90,8 @@ namespace MySpotifyBillboard.Controllers
                         {
                             existingUser = _userRepository.UpdateUserWithNewScope(existingUser, spotifyConnectionData, spotifyTokenParams.Scope);
                         }
-
-                        return Ok(Json(existingUser));
+                        var userDto = new UserDto { SpotifyId = existingUser.SpotifyId };
+                        return Ok(Json(JObject.Parse(JsonConvert.SerializeObject(userDto))));
                     }
                     return BadRequest();
                 }

@@ -35,19 +35,15 @@ namespace MySpotifyBillboard.Services
 
         public async Task<Option<User>> AddNewUser(SpotifyConnectionDataDto spotifyConnectionData)
         {
-            var jsonResponse = (await GetUserInfo(spotifyConnectionData))
-                .Match(
-                    some: jr => jr,
-                    none: null
-                );
+            var jsonResponse = await GetUserInfo(spotifyConnectionData);
+
 
             if (jsonResponse == null)
             {
                 return Option.None<User>();
             }
 
-            if (string.IsNullOrEmpty((string)jsonResponse["display_name"]) || string.IsNullOrEmpty((string)jsonResponse["email"]) ||
-                                                                                string.IsNullOrEmpty((string)jsonResponse["id"]))
+            if (string.IsNullOrEmpty((string)jsonResponse["id"]))
             {
                 return Option.None<User>();
             }
@@ -68,7 +64,7 @@ namespace MySpotifyBillboard.Services
             return Option.Some(newUser);
         }
 
-        public async Task<Option<JObject>> GetUserInfo(SpotifyConnectionDataDto spotifyConnectionData)
+        public async Task<JObject> GetUserInfo(SpotifyConnectionDataDto spotifyConnectionData)
         {
             using (var client = new HttpClient())
             {
@@ -80,11 +76,11 @@ namespace MySpotifyBillboard.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return Option.Some(JObject.Parse(await response.Content.ReadAsStringAsync()));
+                    return JObject.Parse(await response.Content.ReadAsStringAsync());
                 }
             }
 
-            return Option.None<JObject>();
+            return null;
         }
 
         public async Task<User> UpdateUserAfterRefresh(User user, string accessToken, DateTime expirationTime, string scope, string tokenType)
