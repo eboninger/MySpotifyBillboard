@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, URLSearchParams, RequestOptions } from '@angular/http';
+import { URLSearchParams, RequestOptions } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { KeyService } from '../../key.service';
 import { CookieService } from 'ngx-cookie-service';
@@ -16,20 +17,19 @@ export class FinishAuthComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute,
     private keyService: KeyService, private router: Router,
-    private cookieService: CookieService, private http: Http) { }
+    private cookieService: CookieService, private http: HttpClient) { }
 
   ngOnInit() {
     let code = this.activatedRoute.snapshot.queryParams['code'];
     const body = {redirecturi: this.keyService.getSingleKey("RedirectURI"), 
                   code: code, scope: this.keyService.getSingleKey("Scope")}
-    let options = new RequestOptions();
 
-    var response = this.http.post(this.keyService.getSingleKey('API-URL') + 'list/token', body, options)
-      .map(res => res.json())
+    var response = this.http.post(this.keyService.getSingleKey('API-URL') + 'list/token', body)
+      // .map(res => res.json())
       .subscribe(
       data => {
         this.cookieService.set('spotifyId', data["value"]["spotifyId"]);
-        this.router.navigate(['list'], { queryParams: { "spotifyId": data["value"]["spotifyId"], "timeFrame": "long" } })
+        this.router.navigate(['list', data["value"]["spotifyId"], 'long'] )
       },
       err => {
         this.cookieService.deleteAll();

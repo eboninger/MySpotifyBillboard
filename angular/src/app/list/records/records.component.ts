@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Http, URLSearchParams, RequestOptions } from '@angular/http'
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router'
-import { CookieService } from 'ngx-cookie-service'
+import { Component, OnInit, Input } from '@angular/core';
+import { URLSearchParams, RequestOptions } from '@angular/http'
 import { KeyService } from './../../key.service'
 import { Track } from '../track.model'
 import { SerializeTracksService } from './../serialize-tracks.service'
+import { HttpClient } from '@angular/common/http'
 
 @Component({
   selector: 'app-records',
@@ -17,43 +16,39 @@ export class RecordsComponent implements OnInit {
   longNumberOneCons: Track[]
   longTimeCons: Track[]
 
-  constructor(private http: Http, private cookieService: CookieService,
-    private activatedRoute: ActivatedRoute, private keyService: KeyService,
-    private serializeTracksService: SerializeTracksService, private router: Router) {
-    router.events.subscribe((event) => {
-      if ((event instanceof NavigationEnd) && (this.cookieService.get("spotifyId") != null)) {
-        this.getRecords();
-      }
-    })
-  }
+  @Input() spotifyId: string;
+  @Input() timeFrame: string;
+
+
+  constructor(private http: HttpClient, private keyService: KeyService, 
+    private serializeTracksService: SerializeTracksService) { }
 
   async ngOnInit() {
+
+  }
+
+  async ngOnChanges() {
     await this.getRecords();
   }
 
   async getRecords() {
-    let params = new URLSearchParams();
-    params.set('spotifyId', this.cookieService.get("spotifyId"));
-    params.set('timeFrame', this.activatedRoute.snapshot.queryParams["timeFrame"])
-    let options = new RequestOptions();
-    // options.withCredentials = true;
-    options.params = params;
-    await this.http.get(this.keyService.getSingleKey('API-URL') + 'list/records', options)
-      .subscribe(
-      res => {
-        if (res == null) {
-          return;
-        }
-        let recordsJson = res.json();
-        this.longNumberOnes = this.serializeTracksService.separate(recordsJson, "LongestNumberOne");
-        this.longTimes = this.serializeTracksService.separate(recordsJson, "LongestTimeInChart");
-        this.longNumberOneCons = this.serializeTracksService.separate(recordsJson, "LongestNumberOneCons");
-        this.longTimeCons = this.serializeTracksService.separate(recordsJson, "LongestTimeInChartCons");
+    if (this.spotifyId != null && this.timeFrame != null) {
+      await this.http.get(this.keyService.getSingleKey('API-URL') + 'list/records/' + this.spotifyId + '/' + this.timeFrame)
+        .subscribe(
+        res => {
+          if (res == null) {
+            return;
+          }
+          this.longNumberOnes = this.serializeTracksService.separate(res, "LongestNumberOne");
+          this.longTimes = this.serializeTracksService.separate(res, "LongestTimeInChart");
+          this.longNumberOneCons = this.serializeTracksService.separate(res, "LongestNumberOneCons");
+          this.longTimeCons = this.serializeTracksService.separate(res, "LongestTimeInChartCons");
 
-      },
-      err => {
-        // error message - separate page?
-      });
+        },
+        err => {
+          // error message - separate page?
+        });
+    }
   }
 
 }

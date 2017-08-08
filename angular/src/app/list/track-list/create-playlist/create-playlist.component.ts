@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service'
+import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router'
 import { CreatePlaylistService } from './create-playlist.service'
 
@@ -11,20 +10,23 @@ import { CreatePlaylistService } from './create-playlist.service'
 export class CreatePlaylistComponent implements OnInit {
   linkToPlaylist: string
   buttonText: string = "Export Playlist To Spotify"
+  @Input() spotifyId: string;
+  @Input() timeFrame: string;
 
   constructor(private activatedRoute: ActivatedRoute, 
-    private cookieService: CookieService, private createPlaylistService: CreatePlaylistService) { }
+    private createPlaylistService: CreatePlaylistService) { }
 
   ngOnInit() {
+
   }
 
   async export() {
-    await this.createPlaylistService.createPlaylist(this.cookieService.get("spotifyId"), this.activatedRoute.snapshot.queryParams["timeFrame"])
+    await this.createPlaylistService.createPlaylist(this.spotifyId, this.timeFrame)
       .subscribe(res => {
         if (res == null) {
           return;
         }
-        this.linkToPlaylist = res.json()["value"];
+        this.linkToPlaylist = res["value"];
         this.buttonText = "Open Playlist In Spotify";
       },
       // the user has revoked token access

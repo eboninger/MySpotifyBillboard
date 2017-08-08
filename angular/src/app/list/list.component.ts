@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router'
-import { CookieService } from 'ngx-cookie-service'
+import { ActivatedRoute } from '@angular/router'
 
 
 @Component({
@@ -9,12 +8,17 @@ import { CookieService } from 'ngx-cookie-service'
   styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnInit {
-  constructor(private router: Router, private cookieService: CookieService) { }
+  sub: any;
+  spotifyId: string;
+  timeFrame: string;
+
+  constructor(private activatedRoute: ActivatedRoute) { }
 
   async ngOnInit() {
-    if (this.cookieService.get("spotifyId") == null || this.cookieService.get("spotifyId") == "") {
-      this.router.navigate([''])
-    }
+      this.sub = this.activatedRoute.params.subscribe(params => {
+      this.spotifyId = params['spotifyId'];
+      this.timeFrame = params['timeFrame'];
+    })
   }
 
 }

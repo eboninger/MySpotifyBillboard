@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Track } from './../track.model'
 import { KeyService } from './../../key.service'
-import { Http, URLSearchParams, RequestOptions } from '@angular/http'
+import { URLSearchParams, RequestOptions } from '@angular/http'
 import { SerializeTracksService } from './../serialize-tracks.service'
+import { HttpClient } from '@angular/common/http'
 
 @Injectable()
 export class TopTracksService {
   tracks: Track[]
 
-  constructor(private http: Http, private keyService: KeyService,
+  constructor(private http: HttpClient, private keyService: KeyService,
     private serializeTracksService: SerializeTracksService) { }
 
 
@@ -19,7 +20,7 @@ export class TopTracksService {
     let options = new RequestOptions();
     // options.withCredentials = true;
     options.params = params;
-    return this.http.get(this.keyService.getSingleKey('API-URL') + 'list/top_tracks', options);
+    return this.http.get(this.keyService.getSingleKey('API-URL') + 'list/top_tracks/' + spotifyId + '/' + timeFrame);
       
 
   }

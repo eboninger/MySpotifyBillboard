@@ -1,6 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BusyModule } from 'angular2-busy'
+import { ListRoutingModule } from './list-routing.module'
 
 import { CreatePlaylistComponent } from './track-list/create-playlist/create-playlist.component';
 import { RecordsComponent } from './records/records.component';
@@ -25,7 +26,8 @@ import { RoundTwoDecPipe } from './round-two-dec.pipe';
   ],
   imports: [
     CommonModule,
-    BusyModule
+    BusyModule,
+    ListRoutingModule
   ],
   providers: [
     TopTracksService,

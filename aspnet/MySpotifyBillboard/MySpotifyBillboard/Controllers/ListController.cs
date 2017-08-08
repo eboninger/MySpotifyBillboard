@@ -101,8 +101,8 @@ namespace MySpotifyBillboard.Controllers
             }
         }
 
-        [HttpGet("top_tracks")]
-        public async Task<IActionResult> TopTracks([FromQuery] string spotifyId, string timeFrame)
+        [HttpGet("top_tracks/{spotifyId}/{timeFrame}")]
+        public async Task<IActionResult> TopTracks(string spotifyId, string timeFrame)
         {
             var user = (await _userRepository.CanContinueWithRequest(new Dictionary<string, string>
             {
@@ -149,14 +149,14 @@ namespace MySpotifyBillboard.Controllers
         }
 
         //[ValidateAntiForgeryToken]
-        [HttpPost("playlist")]
-        public async Task<IActionResult> CreatePlaylistForUser([FromBody] JObject data)
+        [HttpPost("playlist/{spotifyId}/{timeFrame}")]
+        public async Task<IActionResult> CreatePlaylistForUser(string spotifyId, string timeFrame)
         {
 
             var user = (await _userRepository.CanContinueWithRequest(new Dictionary<string, string>
                 {
-                    {"spotifyId", data.GetValue("spotifyId").ToString()},
-                    {"timeFrame", data.GetValue("timeFrame").ToString()}
+                    {"spotifyId", spotifyId},
+                    {"timeFrame", timeFrame}
                 }))
                 .Match(
                     some: u => u,
@@ -168,7 +168,7 @@ namespace MySpotifyBillboard.Controllers
                 return BadRequest();
             }
 
-            var timeFrameObj = AsTimeFrame(data.GetValue("timeFrame").ToString());
+            var timeFrameObj = AsTimeFrame(timeFrame);
 
 
             // format the name for the playist to be created (i.e. "Four Week Top Tracks (07/31/2017 16:42:40)" )
@@ -183,8 +183,8 @@ namespace MySpotifyBillboard.Controllers
         }
 
         //[ValidateAntiForgeryToken]
-        [HttpDelete("deauthorize")]
-        public IActionResult Deauthorize([FromBody] string spotifyId)
+        [HttpDelete("deauthorize/{spotifyId}")]
+        public IActionResult Deauthorize(string spotifyId)
         {
             if (string.IsNullOrEmpty(spotifyId))
             {
@@ -202,7 +202,7 @@ namespace MySpotifyBillboard.Controllers
             return Ok();
         }
 
-        [HttpGet("records")]
+        [HttpGet("records/{spotifyId}/{timeFrame}")]
         public async Task<IActionResult> Records(string spotifyId, string timeFrame)
         {
             var user = (await _userRepository.CanContinueWithRequest(new Dictionary<string, string>

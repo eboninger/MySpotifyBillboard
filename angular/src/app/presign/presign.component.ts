@@ -25,7 +25,7 @@ export class PresignComponent implements OnInit {
       this.authorizeUri = this.constructUri(authorizationParams, state);
     } else {
       this.isSignedIn = true;
-      this.router.navigate(['list'], { queryParams: { "spotifyId": spotifyId, "timeFrame": "long" } })
+      this.router.navigate(['list', spotifyId, 'long'])
     }
   }
 

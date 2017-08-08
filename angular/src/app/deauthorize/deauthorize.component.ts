@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DeauthorizeUserService } from './../user/deauthorize-user.service'
+import { DeauthorizeUserService } from './deauthorize-user.service'
 import { CookieService } from 'ngx-cookie-service'
 import { Router } from '@angular/router'
 
@@ -29,6 +29,7 @@ export class DeauthorizeComponent implements OnInit {
 
   clearCookies() {
     this.cookieService.deleteAll();
+    let spotifyId = this.cookieService.get("spotifyId")
     this.router.navigate(['']);
   }
 

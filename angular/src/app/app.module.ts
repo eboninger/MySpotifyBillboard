@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, enableProdMode, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { HttpModule } from '@angular/http';
+import { AppRoutingModule } from './app-routing.module'
 import { HttpClientModule } from '@angular/common/http'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
@@ -14,11 +13,9 @@ import { FinishAuthComponent } from './presign/finish-auth/finish-auth.component
 import { DeauthorizeComponent } from './deauthorize/deauthorize.component'
 import { SpotifyLogoComponent } from './spotify-logo/spotify-logo.component';
 
-import { appRoutes } from './routes';
-
 import { KeyService } from './key.service';
 import { CookieService } from 'ngx-cookie-service';
-import { DeauthorizeUserService } from './user/deauthorize-user.service';
+import { DeauthorizeUserService } from './deauthorize/deauthorize-user.service';
 
 
 
@@ -34,16 +31,14 @@ import { DeauthorizeUserService } from './user/deauthorize-user.service';
     PresignComponent,
     FinishAuthComponent,
     DeauthorizeComponent,
-    SpotifyLogoComponent,
+    SpotifyLogoComponent
   ],
   imports: [
     BrowserModule,
-    HttpModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    ListModule,
     NgbModule.forRoot(),
-    RouterModule.forRoot(appRoutes)
+    AppRoutingModule
   ],
   providers: [
     KeyService,
