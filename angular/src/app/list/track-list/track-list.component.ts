@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs'
 export class TrackListComponent implements OnInit {
   busy: Subscription
   tracks: Track[]
+  hasData: Boolean = false;
   @Input() spotifyId: string
   @Input() timeFrame: string
 
@@ -36,9 +37,11 @@ export class TrackListComponent implements OnInit {
           if (res == null) {
             return;
           }
+          this.hasData = true;
           this.tracks = this.serializeTracksService.separate(res, "Tracks");
         },
         err => {
+          this.hasData = false;
           // error message - separate page?
         });
     }

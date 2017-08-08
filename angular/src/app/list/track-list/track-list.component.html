@@ -1,4 +1,4 @@
-<div class="container tracklist" [ngBusy]="busy">
+<div *ngIf="this.hasData" class="container tracklist" [ngBusy]="busy">
   <table class="table table-responsive table-hover">
     <thead>
       <tr>
@@ -36,10 +36,16 @@
             <img class="pos-img" *ngIf="track.PreviousPosition > (i + 1)" src="../../../assets/static/img/up-arrow.png" />
           </td>
           <!-- empty column to fill the space for highlighting -->
-          <td *ngIf="track.PreviousPosition == 0 || track.PreviousPosition == -1"></td> 
+          <td *ngIf="track.PreviousPosition == 0 || track.PreviousPosition == -1"></td>
       </tr>
     </tbody>
   </table>
 </div>
 
-<app-create-playlist [spotifyId]="spotifyId" [timeFrame]="timeFrame"></app-create-playlist>
+<app-create-playlist *ngIf="this.hasData" [spotifyId]="spotifyId" [timeFrame]="timeFrame"></app-create-playlist>
+
+<div class="container tracklist" *ngIf="!this.hasData">
+  <p>
+    Looks you haven't listened to enough music on Spotify for us to compute your charts!
+  </p>
+</div>

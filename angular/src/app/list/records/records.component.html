@@ -1,4 +1,4 @@
-<div class="records">
+<div *ngIf="hasData" class="records">
   <h3>Chart Records</h3>
   <br>
   <app-single-record [headline]="'Longest Time Spent At Number One'" [tracks]="longNumberOnes" [trackField]="'TimeAtNumberOne'"></app-single-record>

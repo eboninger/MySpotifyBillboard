@@ -227,7 +227,7 @@ namespace MySpotifyBillboard.Controllers
 
             if (recordsDto == null)
             {
-                return BadRequest();
+                return NotFound();
             }
             return Ok(recordsDto);
         }
@@ -368,7 +368,12 @@ namespace MySpotifyBillboard.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return Ok(_userRepository.UpdateUserCharts(user, responseString, AsTimeFrame(timeFrame)));
+                    var ttlDto = _userRepository.UpdateUserCharts(user, responseString, AsTimeFrame(timeFrame));
+                    if (ttlDto.ToObject<TopTrackListDto>().Tracks.Count == 0)
+                    {
+                        return NotFound();
+                    }
+                    return Ok(ttlDto);
                 }
                 return NotFound();
             }

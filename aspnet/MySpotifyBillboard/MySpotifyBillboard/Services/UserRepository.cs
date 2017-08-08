@@ -287,14 +287,23 @@ namespace MySpotifyBillboard.Services
 
         public JObject CreateTopTrackListDto(User user, TimeFrame timeFrame)
         {
-            var listId = _billboardDbContext.TopTrackLists.FirstOrDefault(ttl => (ttl.TimeFrame == timeFrame) && (ttl.User.Id == user.Id)).TopTrackListId;
-            var listToConvert = _billboardDbContext.Tracks.Where(t => (t.TopTrackList.TopTrackListId == listId) && (t.Position != 0)).OrderBy(t => t.Position).ToList();
-            var allTrackArtists = _billboardDbContext.TrackArtists.ToList();
-
             var topTrackListDto = new TopTrackListDto
             {
                 Tracks = new List<TopTrackListDtoTrack>()
             };
+
+            var list = _billboardDbContext.TopTrackLists.FirstOrDefault(ttl => (ttl.TimeFrame == timeFrame) && (ttl.User.Id == user.Id));
+
+            if (list == null)
+            {
+                return JObject.Parse(JsonConvert.SerializeObject(topTrackListDto));
+            }
+
+            var listId = list.TopTrackListId;
+            var listToConvert = _billboardDbContext.Tracks.Where(t => (t.TopTrackList.TopTrackListId == listId) && (t.Position != 0)).OrderBy(t => t.Position).ToList();
+            var allTrackArtists = _billboardDbContext.TrackArtists.ToList();
+
+            
 
             foreach (Track track in listToConvert)
             {

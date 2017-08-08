@@ -15,6 +15,7 @@ export class RecordsComponent implements OnInit {
   longTimes: Track[]
   longNumberOneCons: Track[]
   longTimeCons: Track[]
+  hasData: Boolean = false;
 
   @Input() spotifyId: string;
   @Input() timeFrame: string;
@@ -39,6 +40,7 @@ export class RecordsComponent implements OnInit {
           if (res == null) {
             return;
           }
+          this.hasData = true;
           this.longNumberOnes = this.serializeTracksService.separate(res, "LongestNumberOne");
           this.longTimes = this.serializeTracksService.separate(res, "LongestTimeInChart");
           this.longNumberOneCons = this.serializeTracksService.separate(res, "LongestNumberOneCons");
@@ -46,6 +48,7 @@ export class RecordsComponent implements OnInit {
 
         },
         err => {
+          this.hasData = false;
           // error message - separate page?
         });
     }
