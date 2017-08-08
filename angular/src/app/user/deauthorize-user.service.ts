@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Http, URLSearchParams } from '@angular/http'
+import { Http, URLSearchParams, RequestOptions } from '@angular/http'
 import { KeyService } from './../key.service'
 
 @Injectable()
@@ -9,7 +9,10 @@ export class DeauthorizeUserService {
     async deauthorizeUser(spotifyId: string) {
         let params = new URLSearchParams();
         params.set('spotifyId', spotifyId);
-        await this.http.get(this.keyService.getSingleKey('API-URL') + 'spotify/deauthorize', { search: params })
+        let options = new RequestOptions();
+        // options.withCredentials = true;
+        options.params = params;
+        await this.http.delete(this.keyService.getSingleKey('API-URL') + 'list/deauthorize', options)
             .subscribe();
     }
 }

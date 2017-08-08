@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace MySpotifyBillboard.Models.ForSpotifyController
+namespace MySpotifyBillboard.Models.ForListController
 {
     public class Artist
     {

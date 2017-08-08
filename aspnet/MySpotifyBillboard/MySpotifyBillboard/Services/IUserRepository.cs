@@ -1,5 +1,5 @@
-﻿using MySpotifyBillboard.Models.ForSpotifyController;
-using MySpotifyBillboard.Models.ForSpotifyController.Dtos;
+﻿using MySpotifyBillboard.Models.ForListController;
+using MySpotifyBillboard.Models.ForListController.Dtos;
 using MySpotifyBillboard.Models.Shared;
 using Newtonsoft.Json.Linq;
 using System;

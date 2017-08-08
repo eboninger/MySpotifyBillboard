@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MySpotifyBillboard.Models.ForSpotifyController.Dtos
+namespace MySpotifyBillboard.Models.ForListController.Dtos
 {
     public class AddToPlaylistDto
     {

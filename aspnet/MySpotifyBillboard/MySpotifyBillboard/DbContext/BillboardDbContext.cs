@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using MySpotifyBillboard.Models;
-using MySpotifyBillboard.Models.ForSpotifyController;
+using MySpotifyBillboard.Models.ForListController;
 using MySpotifyBillboard.Models.Shared;
 
 namespace MySpotifyBillboard.DbContext

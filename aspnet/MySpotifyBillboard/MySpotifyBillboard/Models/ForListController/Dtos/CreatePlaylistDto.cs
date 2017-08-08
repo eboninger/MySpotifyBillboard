@@ -1,4 +1,4 @@
-﻿namespace MySpotifyBillboard.Models.ForSpotifyController.Dtos
+﻿namespace MySpotifyBillboard.Models.ForListController.Dtos
 {
     public class CreatePlaylistDto
     {

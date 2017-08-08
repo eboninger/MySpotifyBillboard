@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using msb.Helpers;
 using MySpotifyBillboard.Helpers;
-using MySpotifyBillboard.Models.ForSpotifyController;
-using MySpotifyBillboard.Models.ForSpotifyController.Dtos;
+using MySpotifyBillboard.Models.ForListController;
+using MySpotifyBillboard.Models.ForListController.Dtos;
 using MySpotifyBillboard.Models.Shared;
 using MySpotifyBillboard.Services;
 using Newtonsoft.Json;
@@ -18,20 +18,23 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace MySpotifyBillboard.Controllers
 {
+    //[ValidateAntiForgeryToken]
     [Route("api/[controller]")]
-    public class SpotifyController : Controller
+    public class ListController : Controller
     {
         private readonly IUserRepository _userRepository;
 
-        public SpotifyController(IUserRepository userRepository)
+        
+        public ListController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
 
 
         // get initial token for access to the spotify API.  user must specify all token params
-        [HttpGet("token")]
-        public async Task<IActionResult> SpotifyToken(SpotifyTokenParams spotifyTokenParams)
+        //[ValidateAntiForgeryToken]
+        [HttpPost("token")]
+        public async Task<IActionResult> SpotifyToken([FromBody] SpotifyTokenParams spotifyTokenParams)
         {
             using (var client = new HttpClient())
             {
@@ -98,7 +101,6 @@ namespace MySpotifyBillboard.Controllers
             }
         }
 
-
         [HttpGet("top_tracks")]
         public async Task<IActionResult> TopTracks([FromQuery] string spotifyId, string timeFrame)
         {
@@ -146,14 +148,15 @@ namespace MySpotifyBillboard.Controllers
             return await MakeTopTracksRequest(timeFrame, user, timeFrameQueryString);
         }
 
-
-        [HttpGet("playlist")]
-        public async Task<IActionResult> CreatePlaylistForUser(string spotifyId, string timeFrame)
+        //[ValidateAntiForgeryToken]
+        [HttpPost("playlist")]
+        public async Task<IActionResult> CreatePlaylistForUser([FromBody] JObject data)
         {
+
             var user = (await _userRepository.CanContinueWithRequest(new Dictionary<string, string>
                 {
-                    {"spotifyId", spotifyId},
-                    {"timeFrame", timeFrame}
+                    {"spotifyId", data.GetValue("spotifyId").ToString()},
+                    {"timeFrame", data.GetValue("timeFrame").ToString()}
                 }))
                 .Match(
                     some: u => u,
@@ -165,7 +168,7 @@ namespace MySpotifyBillboard.Controllers
                 return BadRequest();
             }
 
-            var timeFrameObj = AsTimeFrame(timeFrame);
+            var timeFrameObj = AsTimeFrame(data.GetValue("timeFrame").ToString());
 
 
             // format the name for the playist to be created (i.e. "Four Week Top Tracks (07/31/2017 16:42:40)" )
@@ -179,9 +182,9 @@ namespace MySpotifyBillboard.Controllers
             return await MakePlaylistRequest(user, requestContentString, timeFrameObj);
         }
 
-
-        [HttpGet("deauthorize")]
-        public IActionResult Deauthorize(string spotifyId)
+        //[ValidateAntiForgeryToken]
+        [HttpDelete("deauthorize")]
+        public IActionResult Deauthorize([FromBody] string spotifyId)
         {
             if (string.IsNullOrEmpty(spotifyId))
             {

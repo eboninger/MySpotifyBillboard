@@ -3,18 +3,18 @@
     [attr.aria-expanded]="!isCollapsed" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <a class="nav-link navbar-brand" [ngClass]="checkIfDisabled()" [routerLink]="['home']" [queryParams]="{timeFrame: 'long'}"
+  <a class="nav-link navbar-brand" [ngClass]="checkIfDisabled()" [routerLink]="['list']" [queryParams]="{timeFrame: 'long'}"
     queryParamsHandling="merge">My Spotify Billboard</a>
 <div class="navbar-collapse collapse" id="navbarSupportedContent" [ngbCollapse]="isCollapsed">
     <ul class="navbar-nav">
       <li class="nav-item" >
-        <a class="nav-link" [ngStyle]="activeStyling('long')" [ngClass]="checkIfDisabled()" [routerLink]="['home']" [queryParams]="{timeFrame: 'long'}" queryParamsHandling="merge">All Time <span class="sr-only">(current)</span></a>
+        <a class="nav-link" [ngStyle]="activeStyling('long')" [ngClass]="checkIfDisabled()" [routerLink]="['list']" [queryParams]="{timeFrame: 'long'}" queryParamsHandling="merge">All Time <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item" >
-        <a class="nav-link" [ngStyle]="activeStyling('med')" [ngClass]="checkIfDisabled()" [routerLink]="['home']" [queryParams]="{timeFrame: 'med'}" queryParamsHandling="merge">Six Months</a>
+        <a class="nav-link" [ngStyle]="activeStyling('med')" [ngClass]="checkIfDisabled()" [routerLink]="['list']" [queryParams]="{timeFrame: 'med'}" queryParamsHandling="merge">Six Months</a>
       </li>
       <li class="nav-item" >
-        <a class="nav-link" [ngStyle]="activeStyling('short')" [ngClass]="checkIfDisabled()" [routerLink]="['home']" [queryParams]="{timeFrame: 'short'}" queryParamsHandling="merge">Four Weeks</a>
+        <a class="nav-link" [ngStyle]="activeStyling('short')" [ngClass]="checkIfDisabled()" [routerLink]="['list']" [queryParams]="{timeFrame: 'short'}" queryParamsHandling="merge">Four Weeks</a>
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">

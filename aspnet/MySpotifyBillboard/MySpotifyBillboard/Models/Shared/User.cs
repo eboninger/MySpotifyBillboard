@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using MySpotifyBillboard.Models.ForSpotifyController;
+using MySpotifyBillboard.Models.ForListController;
 
 namespace MySpotifyBillboard.Models.Shared
 {

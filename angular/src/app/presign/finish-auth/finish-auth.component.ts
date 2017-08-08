@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, URLSearchParams } from '@angular/http';
+import { Http, URLSearchParams, RequestOptions } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { KeyService } from '../../key.service';
 import { CookieService } from 'ngx-cookie-service';
@@ -20,19 +20,16 @@ export class FinishAuthComponent implements OnInit {
 
   ngOnInit() {
     let code = this.activatedRoute.snapshot.queryParams['code'];
-    let params: URLSearchParams = new URLSearchParams();
-    let spotifyId = ""
-    params.set('redirecturi', this.keyService.getSingleKey("RedirectURI"));
-    params.set('code', code);
-    params.set('scope', this.keyService.getSingleKey("Scope"));
+    const body = {redirecturi: this.keyService.getSingleKey("RedirectURI"), 
+                  code: code, scope: this.keyService.getSingleKey("Scope")}
+    let options = new RequestOptions();
 
-    var response = this.http.get(this.keyService.getSingleKey('API-URL') + 'spotify/token', {
-      search: params
-    }).map(res => res.json())
+    var response = this.http.post(this.keyService.getSingleKey('API-URL') + 'list/token', body, options)
+      .map(res => res.json())
       .subscribe(
       data => {
         this.cookieService.set('spotifyId', data["value"]["spotifyId"]);
-        this.router.navigate(['home'], { queryParams: { "spotifyId": data["value"]["spotifyId"], "timeFrame": "long" } })
+        this.router.navigate(['list'], { queryParams: { "spotifyId": data["value"]["spotifyId"], "timeFrame": "long" } })
       },
       err => {
         this.cookieService.deleteAll();

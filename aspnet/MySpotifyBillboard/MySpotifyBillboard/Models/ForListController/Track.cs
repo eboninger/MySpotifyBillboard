@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using MySpotifyBillboard.Models.ForSpotifyController;
+using MySpotifyBillboard.Models.ForListController;
 
-namespace MySpotifyBillboard.Models.ForSpotifyController
+namespace MySpotifyBillboard.Models.ForListController
 {
     public class Track
     {

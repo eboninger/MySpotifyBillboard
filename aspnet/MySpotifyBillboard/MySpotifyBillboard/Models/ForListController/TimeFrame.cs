@@ -1,4 +1,4 @@
-﻿namespace MySpotifyBillboard.Models.ForSpotifyController
+﻿namespace MySpotifyBillboard.Models.ForListController
 {
     public enum TimeFrame
     {

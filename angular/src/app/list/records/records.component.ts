@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, URLSearchParams } from '@angular/http'
+import { Http, URLSearchParams, RequestOptions } from '@angular/http'
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router'
 import { CookieService } from 'ngx-cookie-service'
 import { KeyService } from './../../key.service'
@@ -35,7 +35,10 @@ export class RecordsComponent implements OnInit {
     let params = new URLSearchParams();
     params.set('spotifyId', this.cookieService.get("spotifyId"));
     params.set('timeFrame', this.activatedRoute.snapshot.queryParams["timeFrame"])
-    await this.http.get(this.keyService.getSingleKey('API-URL') + 'spotify/records', { search: params })
+    let options = new RequestOptions();
+    // options.withCredentials = true;
+    options.params = params;
+    await this.http.get(this.keyService.getSingleKey('API-URL') + 'list/records', options)
       .subscribe(
       res => {
         if (res == null) {

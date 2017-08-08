@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using MySpotifyBillboard.Models.ForSpotifyController;
+using MySpotifyBillboard.Models.ForListController;
 using MySpotifyBillboard.Models.Shared;
 
-namespace MySpotifyBillboard.Models.ForSpotifyController
+namespace MySpotifyBillboard.Models.ForListController
 {
     public class TopTrackList
     {

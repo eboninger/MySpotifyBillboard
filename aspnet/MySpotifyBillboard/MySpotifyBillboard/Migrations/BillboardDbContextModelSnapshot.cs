@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using MySpotifyBillboard.DbContext;
-using MySpotifyBillboard.Models.ForSpotifyController;
+using MySpotifyBillboard.Models.ForListController;
 
 namespace MySpotifyBillboard.Migrations
 {
@@ -17,7 +17,7 @@ namespace MySpotifyBillboard.Migrations
                 .HasAnnotation("ProductVersion", "1.1.2")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("MySpotifyBillboard.Models.ForSpotifyController.Artist", b =>
+            modelBuilder.Entity("MySpotifyBillboard.Models.ForListController.Artist", b =>
                 {
                     b.Property<int>("ArtistId")
                         .ValueGeneratedOnAdd();
@@ -36,7 +36,7 @@ namespace MySpotifyBillboard.Migrations
                     b.ToTable("Artists");
                 });
 
-            modelBuilder.Entity("MySpotifyBillboard.Models.ForSpotifyController.TopTrackList", b =>
+            modelBuilder.Entity("MySpotifyBillboard.Models.ForListController.TopTrackList", b =>
                 {
                     b.Property<int>("TopTrackListId")
                         .ValueGeneratedOnAdd();
@@ -56,7 +56,7 @@ namespace MySpotifyBillboard.Migrations
                     b.ToTable("TopTrackLists");
                 });
 
-            modelBuilder.Entity("MySpotifyBillboard.Models.ForSpotifyController.Track", b =>
+            modelBuilder.Entity("MySpotifyBillboard.Models.ForListController.Track", b =>
                 {
                     b.Property<int>("TrackId")
                         .ValueGeneratedOnAdd();
@@ -111,7 +111,7 @@ namespace MySpotifyBillboard.Migrations
                     b.ToTable("Tracks");
                 });
 
-            modelBuilder.Entity("MySpotifyBillboard.Models.ForSpotifyController.TrackArtist", b =>
+            modelBuilder.Entity("MySpotifyBillboard.Models.ForListController.TrackArtist", b =>
                 {
                     b.Property<int>("TrackId");
 
@@ -158,7 +158,7 @@ namespace MySpotifyBillboard.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("MySpotifyBillboard.Models.ForSpotifyController.TopTrackList", b =>
+            modelBuilder.Entity("MySpotifyBillboard.Models.ForListController.TopTrackList", b =>
                 {
                     b.HasOne("MySpotifyBillboard.Models.Shared.User", "User")
                         .WithMany("TopTrackLists")
@@ -166,22 +166,22 @@ namespace MySpotifyBillboard.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("MySpotifyBillboard.Models.ForSpotifyController.Track", b =>
+            modelBuilder.Entity("MySpotifyBillboard.Models.ForListController.Track", b =>
                 {
-                    b.HasOne("MySpotifyBillboard.Models.ForSpotifyController.TopTrackList", "TopTrackList")
+                    b.HasOne("MySpotifyBillboard.Models.ForListController.TopTrackList", "TopTrackList")
                         .WithMany("Tracks")
                         .HasForeignKey("TopTrackListId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("MySpotifyBillboard.Models.ForSpotifyController.TrackArtist", b =>
+            modelBuilder.Entity("MySpotifyBillboard.Models.ForListController.TrackArtist", b =>
                 {
-                    b.HasOne("MySpotifyBillboard.Models.ForSpotifyController.Artist", "Artist")
+                    b.HasOne("MySpotifyBillboard.Models.ForListController.Artist", "Artist")
                         .WithMany("TrackArtists")
                         .HasForeignKey("ArtistId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("MySpotifyBillboard.Models.ForSpotifyController.Track", "Track")
+                    b.HasOne("MySpotifyBillboard.Models.ForListController.Track", "Track")
                         .WithMany("TrackArtists")
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade);

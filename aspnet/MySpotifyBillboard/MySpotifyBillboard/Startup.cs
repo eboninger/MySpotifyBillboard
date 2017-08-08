@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using MySpotifyBillboard.DbContext;
 using MySpotifyBillboard.Models;
 using MySpotifyBillboard.Services;
+using Microsoft.AspNetCore.Antiforgery;
 
 namespace MySpotifyBillboard
 {
@@ -41,13 +42,27 @@ namespace MySpotifyBillboard
                 options => options.UseSqlServer(Configuration.GetConnectionString("MySpotifyBillboard")));
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IAntiforgery antiforgery)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            app.Use(next => context =>
+            {
+                if (context.Request.Path == "/")
+                {
+                    var tokens = antiforgery.GetAndStoreTokens(context);
+                    context.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken, new CookieOptions { HttpOnly = false });
+                }
+                return next(context);
+            });
+
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseExceptionHandler(appBuilder =>
             {

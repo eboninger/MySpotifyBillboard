@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using MySpotifyBillboard.Models.Shared;
 
-namespace MySpotifyBillboard.Models.ForSpotifyController
+namespace MySpotifyBillboard.Models.ForListController
 {
     public class Followers
     {
