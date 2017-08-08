@@ -10,8 +10,6 @@ import { CookieService } from 'ngx-cookie-service'
 export class NavComponent implements OnInit {
   isSignedIn: boolean
   isCollapsed = false;
-  activeTimeFrame: string;
-  sub: any;
 
   constructor(private activatedRoute: ActivatedRoute, private router: Router,
                private cookieService: CookieService) {
@@ -23,9 +21,7 @@ export class NavComponent implements OnInit {
    }
 
   async ngOnInit() {
-    this.sub = this.activatedRoute.params.subscribe(params => {
-      this.activeTimeFrame = params['timeFrame'];
-    })
+
   }
 
   spotifyId() {
@@ -37,7 +33,7 @@ export class NavComponent implements OnInit {
     }
   }
 
-  checkIfDisabled() {
+  cookied() {
     if (this.isSignedIn) {
       return []
     } else {
@@ -53,22 +49,22 @@ export class NavComponent implements OnInit {
     }
   }
 
-  activeStyling(timeFrame: string) {
-    console.log(this.activatedRoute.params)
-    console.log(this.activeTimeFrame)
-    if ((this.activeTimeFrame == null || this.activeTimeFrame == "") && (timeFrame == "account")) {
-      return {color: 'rgba(240,125,226,0.9)'};
-    }
+  // activeStyling(timeFrame: string) {
+  //   console.log(this.activatedRoute.params)
+  //   console.log(this.activeTimeFrame)
+  //   if ((this.activeTimeFrame == null || this.activeTimeFrame == "") && (timeFrame == "account")) {
+  //     return {color: 'rgba(240,125,226,0.9)'};
+  //   }
 
-    if (this.activeTimeFrame == null || this.activeTimeFrame == "") {
-      return {color: 'rgba(230,125,226,0.7)'};
-    }
+  //   if (this.activeTimeFrame == null || this.activeTimeFrame == "") {
+  //     return {color: 'rgba(230,125,226,0.7)'};
+  //   }
 
-    if (this.activeTimeFrame == timeFrame) {
-      return {color: 'rgba(240,125,226,0.9)'};
-    }
+  //   if (this.activeTimeFrame == timeFrame) {
+  //     return {color: 'rgba(240,125,226,0.9)'};
+  //   }
 
-    return {color: 'rgba(230,125,226,0.7)'};
-  }
+  //   return {color: 'rgba(230,125,226,0.7)'};
+  // }
 
 }
