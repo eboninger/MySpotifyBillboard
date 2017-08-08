@@ -14,7 +14,7 @@ import { DeauthorizeComponent } from './deauthorize/deauthorize.component'
 import { SpotifyLogoComponent } from './spotify-logo/spotify-logo.component';
 
 import { KeyService } from './key.service';
-import { CookieService } from 'ngx-cookie-service';
+import { CookieModule } from 'ngx-cookie';
 import { DeauthorizeUserService } from './deauthorize/deauthorize-user.service';
 
 
@@ -38,11 +38,11 @@ import { DeauthorizeUserService } from './deauthorize/deauthorize-user.service';
     BrowserAnimationsModule,
     HttpClientModule,
     NgbModule.forRoot(),
+    CookieModule.forRoot(),
     AppRoutingModule
   ],
   providers: [
     KeyService,
-    CookieService,
     DeauthorizeUserService
   ],
   schemas: [

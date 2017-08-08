@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeauthorizeComponent } from './deauthorize.component';
-import { CookieService } from 'ngx-cookie-service';
-import { DeauthorizeUserService } from './../user/deauthorize-user.service'
+import { CookieService } from 'ngx-cookie';
+import { DeauthorizeUserService } from './deauthorize-user.service'
 
 describe('DeauthorizeComponent', () => {
   let component: DeauthorizeComponent;

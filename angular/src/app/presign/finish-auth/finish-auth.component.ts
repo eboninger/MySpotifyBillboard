@@ -3,7 +3,7 @@ import { URLSearchParams, RequestOptions } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { KeyService } from '../../key.service';
-import { CookieService } from 'ngx-cookie-service';
+import { CookieService } from 'ngx-cookie';
 import { User } from '../../user/user.model';
 import 'rxjs/add/operator/map'
 
@@ -27,11 +27,11 @@ export class FinishAuthComponent implements OnInit {
     var response = this.http.post(this.keyService.getSingleKey('API-URL') + 'list/token', body)
       .subscribe(
       data => {
-        this.cookieService.set('spotifyId', data['value']['SpotifyId']);
+        this.cookieService.put('spotifyId', data['value']['SpotifyId']);
         this.router.navigate(['list', data['value']['SpotifyId'], 'long'] )
       },
       err => {
-        this.cookieService.deleteAll();
+        this.cookieService.removeAll();
         this.router.navigate(['']);
       });
   }
